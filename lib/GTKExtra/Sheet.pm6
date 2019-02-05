@@ -14,7 +14,7 @@ use GTK::Roles::Types;
 use GTKExtra::Roles::Signals::Sheet;
 
 my subset Ancestry
-  where GtkExtraSheet | GtkContainer | GtkBuildable | GtkWidget;
+  where GtkSheet | GtkContainer | GtkBuildable | GtkWidget;
 
 class GTKExtra::Sheets is GTK::Container {
   also does GTK::Roles::Types;
