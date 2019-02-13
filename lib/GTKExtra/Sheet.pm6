@@ -250,12 +250,14 @@ class GTKExtra::Sheets is GTK::Container {
     self.connect-traverse($!es);
   }
 
-  method add_column (guint $ncols) {
-    gtk_sheet_add_column($!es, $ncols);
+  method add_column (Int() $ncols) {
+    my $nc = self.RESOLVE-UINT($ncols);
+    gtk_sheet_add_column($!es, $nc);
   }
 
-  method add_row (guint $nrows) {
-    gtk_sheet_add_row($!es, $nrows);
+  method add_row (Int() $nrows) {
+    my $nr = self.RESOLVE-UINT($nrows);
+    gtk_sheet_add_row($!es, $nr);
   }
 
   method attach (
@@ -611,7 +613,7 @@ class GTKExtra::Sheets is GTK::Container {
     gtk_sheet_range_set_font($!es, $urange, $font_desc);
   }
 
-  method range_set_foreground (GtkSheetRange $urange, GdkColor $color) {
+  method range_set_foreground (GtkSheetRange() $urange, GdkColor $color) {
     gtk_sheet_range_set_foreground($!es, $urange, $color);
   }
 
