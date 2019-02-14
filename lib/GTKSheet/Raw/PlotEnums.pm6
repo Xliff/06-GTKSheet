@@ -1,0 +1,105 @@
+our enum GtkPlotData is export (
+  GTK_PLOT_DATA_X 	    => 1,
+  GTK_PLOT_DATA_Y 	    => 1 +< 1,
+  GTK_PLOT_DATA_Z 	    => 1 +< 2,
+  GTK_PLOT_DATA_A 	    => 1 +< 3,
+  GTK_PLOT_DATA_DX 	    => 1 +< 4,
+  GTK_PLOT_DATA_DY 	    => 1 +< 5,
+  GTK_PLOT_DATA_DZ 	    => 1 +< 6,
+  GTK_PLOT_DATA_DA 	    => 1 +< 7,
+  GTK_PLOT_DATA_LABELS 	=> 1 +< 8,
+);
+
+our enum GtkPlotScale is export <
+  GTK_PLOT_SCALE_LINEAR
+  GTK_PLOT_SCALE_LOG10
+>
+
+our enum GtkPlotSymbolType is export <
+  GTK_PLOT_SYMBOL_NONE
+  GTK_PLOT_SYMBOL_SQUARE
+  GTK_PLOT_SYMBOL_CIRCLE
+  GTK_PLOT_SYMBOL_UP_TRIANGLE
+  GTK_PLOT_SYMBOL_DOWN_TRIANGLE
+  GTK_PLOT_SYMBOL_RIGHT_TRIANGLE
+  GTK_PLOT_SYMBOL_LEFT_TRIANGLE
+  GTK_PLOT_SYMBOL_DIAMOND
+  GTK_PLOT_SYMBOL_PLUS
+  GTK_PLOT_SYMBOL_CROSS
+  GTK_PLOT_SYMBOL_STAR
+  GTK_PLOT_SYMBOL_DOT
+  GTK_PLOT_SYMBOL_IMPULSE
+>;
+
+our enum GtkPlotSymbolStyle is export <
+  GTK_PLOT_SYMBOL_EMPTY
+  GTK_PLOT_SYMBOL_FILLED
+  GTK_PLOT_SYMBOL_OPAQUE
+>;
+
+our enum GtkPlotBorderStyle is export <
+  GTK_PLOT_BORDER_NONE
+  GTK_PLOT_BORDER_LINE
+  GTK_PLOT_BORDER_SHADOW
+>;
+
+our enum GtkPlotLineStyle is export <
+  GTK_PLOT_LINE_NONE
+  GTK_PLOT_LINE_SOLID
+  GTK_PLOT_LINE_DOTTED
+  GTK_PLOT_LINE_DASHED
+  GTK_PLOT_LINE_DOT_DASH
+  GTK_PLOT_LINE_DOT_DOT_DASH
+  GTK_PLOT_LINE_DOT_DASH_DASH
+>;
+
+our enum GtkPlotConnector is export <
+  GTK_PLOT_CONNECT_NONE
+  GTK_PLOT_CONNECT_STRAIGHT
+  GTK_PLOT_CONNECT_SPLINE
+  GTK_PLOT_CONNECT_HV_STEP
+  GTK_PLOT_CONNECT_VH_STEP
+  GTK_PLOT_CONNECT_MIDDLE_STEP
+>;
+
+our enum GtkPlotLabelPos is export (
+  GTK_PLOT_LABEL_NONE    	=> 0,
+  GTK_PLOT_LABEL_IN 	   	=> 1,
+  GTK_PLOT_LABEL_OUT    	=> 2,
+);
+
+our enum GtkPlotError is export <
+  GTK_PLOT_ERROR_DIV_ZERO
+  GTK_PLOT_ERROR_LOG_NEG
+>;
+
+our enum GtkPlotOrientation is export <
+  GTK_PLOT_AXIS_X
+  GTK_PLOT_AXIS_Y
+  GTK_PLOT_AXIS_Z
+>;
+
+our enum GtkPlotAxisPos is export <
+  GTK_PLOT_AXIS_LEFT
+  GTK_PLOT_AXIS_RIGHT
+  GTK_PLOT_AXIS_TOP
+  GTK_PLOT_AXIS_BOTTOM
+>;
+
+our enum GtkPlotLabelStyle is export <
+  GTK_PLOT_LABEL_FLOAT
+  GTK_PLOT_LABEL_EXP
+  GTK_PLOT_LABEL_POW
+>;
+
+our enum GtkPlotTicksPos is export (
+  GTK_PLOT_TICKS_NONE  => 0,
+  GTK_PLOT_TICKS_IN		 => 1,
+  GTK_PLOT_TICKS_OUT   => 2
+)
+
+our enum GtkPlotGradient is export (
+  GTK_PLOT_GRADIENT_H		=> 1,
+  GTK_PLOT_GRADIENT_V		=> 2,
+  GTK_PLOT_GRADIENT_S		=> 4,
+);
