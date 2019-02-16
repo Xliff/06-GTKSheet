@@ -94,24 +94,6 @@ sub gtk_sheet_cell_delete (GtkSheet $sheet, gint $row, gint $column)
   is export
   { * }
 
-sub gtk_sheet_cell_get_can_focus (GtkSheet $sheet, gint $row, gint $col)
-  returns uint32
-  is native(extra)
-  is export
-  { * }
-
-sub gtk_sheet_cell_get_editable (GtkSheet $sheet, gint $row, gint $col)
-  returns uint32
-  is native(extra)
-  is export
-  { * }
-
-sub gtk_sheet_cell_get_sensitive (GtkSheet $sheet, gint $row, gint $col)
-  returns uint32
-  is native(extra)
-  is export
-  { * }
-
 sub gtk_sheet_cell_get_state (GtkSheet $sheet, gint $row, gint $col)
   returns GtkStateType
   is native(extra)
@@ -124,7 +106,11 @@ sub gtk_sheet_cell_get_text (GtkSheet $sheet, gint $row, gint $col)
   is export
   { * }
 
-sub gtk_sheet_cell_get_tooltip_markup (GtkSheet $sheet, gint $row, gint $col)
+sub gtk_sheet_cell_get_tooltip_markup (
+  GtkSheet $sheet,
+  gint $row,
+  gint $col
+)
   returns Str
   is native(extra)
   is export
@@ -132,26 +118,6 @@ sub gtk_sheet_cell_get_tooltip_markup (GtkSheet $sheet, gint $row, gint $col)
 
 sub gtk_sheet_cell_get_tooltip_text (GtkSheet $sheet, gint $row, gint $col)
   returns Str
-  is native(extra)
-  is export
-  { * }
-
-sub gtk_sheet_cell_set_can_focus (
-  GtkSheet $sheet,
-  gint $row,
-  gint $col,
-  gboolean $can_focus
-)
-  is native(extra)
-  is export
-  { * }
-
-sub gtk_sheet_cell_set_sensitive (
-  GtkSheet $sheet,
-  gint $row,
-  gint $col,
-  gboolean $is_sensitive
-)
   is native(extra)
   is export
   { * }
@@ -223,12 +189,20 @@ sub gtk_sheet_construct_with_custom_entry (
   is export
   { * }
 
-sub gtk_sheet_delete_columns (GtkSheet $sheet, guint $col, guint $ncols)
+sub gtk_sheet_delete_columns (
+  GtkSheet $sheet,
+  guint $col,
+  guint $ncols
+)
   is native(extra)
   is export
   { * }
 
-sub gtk_sheet_delete_rows (GtkSheet $sheet, guint $row, guint $nrows)
+sub gtk_sheet_delete_rows (
+  GtkSheet $sheet,
+  guint $row,
+  guint $nrows
+)
   is native(extra)
   is export
   { * }
@@ -360,7 +334,7 @@ sub gtk_sheet_get_rows_count (GtkSheet $sheet)
 
 sub gtk_sheet_get_selection (
   GtkSheet $sheet,
-  uint32 $state,                  # GtkSheetState $state,
+  GtkSheetState $state,
   GtkSheetRange $range
 )
   returns uint32
@@ -375,12 +349,6 @@ sub gtk_sheet_get_visible_range (GtkSheet $sheet, GtkSheetRange $range)
 
 sub gtk_sheet_grid_visible (GtkSheet $sheet)
   returns uint32
-  is native(extra)
-  is export
-  { * }
-
-sub gtk_sheet_height (GtkSheet $sheet)
-  returns gint
   is native(extra)
   is export
   { * }
@@ -444,8 +412,8 @@ sub gtk_sheet_move_child (
   is export
   { * }
 
-sub gtk_sheet_moveto (G
-  tkSheet $sheet,
+sub gtk_sheet_moveto (
+  GtkSheet $sheet,
   gint $row,
   gint $column,
   gint $row_align,
@@ -503,7 +471,7 @@ sub gtk_sheet_range_get_type ()
 sub gtk_sheet_range_set_background (
   GtkSheet $sheet,
   GtkSheetRange $urange,
-  GdkColor $color
+  GdkRGBA $color
 )
   is native(extra)
   is export
@@ -514,7 +482,8 @@ sub gtk_sheet_range_set_border (
   GtkSheetRange $urange,
   gint $mask,
   guint $width,
-  gint $line_style
+  cairo_line_cap_t $cap_style,
+  cairo_line_join_t $join_style
 )
   is native(extra)
   is export
@@ -523,7 +492,16 @@ sub gtk_sheet_range_set_border (
 sub gtk_sheet_range_set_border_color (
   GtkSheet $sheet,
   GtkSheetRange $urange,
-  GdkColor $color
+  GdkRGBA $color
+)
+  is native(extra)
+  is export
+  { * }
+
+sub gtk_sheet_range_set_css_class (
+  GtkSheet $sheet,
+  GtkSheetRange $urange,
+  Str $css_class
 )
   is native(extra)
   is export
@@ -550,7 +528,7 @@ sub gtk_sheet_range_set_font (
 sub gtk_sheet_range_set_foreground (
   GtkSheet $sheet,
   GtkSheetRange $urange,
-  GdkColor $color
+  GdkRGBA $color
 )
   is native(extra)
   is export
@@ -559,7 +537,7 @@ sub gtk_sheet_range_set_foreground (
 sub gtk_sheet_range_set_justification (
   GtkSheet $sheet,
   GtkSheetRange $urange,
-  uint32 $justification           # GtkJustification $justification
+  GtkJustification $just
 )
   is native(extra)
   is export
@@ -599,23 +577,8 @@ sub gtk_sheet_row_button_justify (
   is export
   { * }
 
-sub gtk_sheet_row_get_readonly (GtkSheet $sheet, gint $row)
-  returns uint32
-  is native(extra)
-  is export
-  { * }
-
 sub gtk_sheet_row_sensitive (GtkSheet $sheet, gint $row)
   returns uint32
-  is native(extra)
-  is export
-  { * }
-
-sub gtk_sheet_row_set_readonly (
-  GtkSheet $sheet,
-  gint $row,
-  gboolean $is_readonly
-)
   is native(extra)
   is export
   { * }
@@ -632,7 +595,10 @@ sub gtk_sheet_row_visible (GtkSheet $sheet, gint $row)
   is export
   { * }
 
-sub gtk_sheet_rows_labels_set_visibility (GtkSheet $sheet, gboolean $visible)
+sub gtk_sheet_rows_labels_set_visibility (
+  GtkSheet $sheet,
+  gboolean $visible
+)
   is native(extra)
   is export
   { * }
@@ -705,7 +671,12 @@ sub gtk_sheet_set_cell (
   is export
   { * }
 
-sub gtk_sheet_set_cell_text (GtkSheet $sheet, gint $row, gint $col, Str $text)
+sub gtk_sheet_set_cell_text (
+  GtkSheet $sheet,
+  gint $row,
+  gint $col,
+  Str $text
+)
   is native(extra)
   is export
   { * }
@@ -725,7 +696,7 @@ sub gtk_sheet_set_entry_editable (GtkSheet $sheet, gboolean $editable)
   is export
   { * }
 
-sub gtk_sheet_set_grid (GtkSheet $sheet, GdkColor $color)
+sub gtk_sheet_set_grid (GtkSheet $sheet, GdkRGBA $color)
   is native(extra)
   is export
   { * }
@@ -801,18 +772,6 @@ sub gtk_sheet_unselect_range (GtkSheet $sheet)
   is export
   { * }
 
-sub gtk_sheet_width (GtkSheet $sheet)
-  returns gint
-  is native(extra)
-  is export
-  { * }
-
-sub gtk_sheet_get_vjustification (GtkSheet $sheet)
-  returns uint32 # GtkSheetVerticalJustification
-  is native(extra)
-  is export
-  { * }
-
 sub gtk_sheet_get_entry_text (GtkSheet $sheet)
   returns Str
   is native(extra)
@@ -831,16 +790,8 @@ sub gtk_sheet_get_vadjustment (GtkSheet $sheet)
   is export
   { * }
 
-sub gtk_sheet_get_traverse_type (GtkSheet $sheet)
-  returns uint32 # GtkSheetTraverseType
-  is native(extra)
-  is export
-  { * }
-
-sub gtk_sheet_set_vjustification (
-  GtkSheet $sheet,
-  uint32 $vjust                   # GtkSheetVerticalJustification $vjust
-)
+sub gtk_sheet_get_vjustification (GtkSheet $sheet)
+  returns uint32 # GtkSheetVerticalJustification
   is native(extra)
   is export
   { * }
@@ -860,9 +811,9 @@ sub gtk_sheet_set_vadjustment (GtkSheet $sheet, GtkAdjustment $adjustment)
   is export
   { * }
 
-sub gtk_sheet_set_traverse_type (
+sub gtk_sheet_set_vjustification (
   GtkSheet $sheet,
-  uint32 $ttype                   # GtkSheetTraverseType $ttype
+  uint32 $vjust                   # GtkSheetVerticalJustification $vjust
 )
   is native(extra)
   is export

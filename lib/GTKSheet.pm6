@@ -4,21 +4,21 @@ use NativeCall;
 
 use GTK::Compat::Types;
 use GTK::Raw::Types;
-use GTKExtra::Raw::Types;
-use GTKExtra::Raw::Sheets;
+use GTKSheet::Raw::Types;
+use GTKSheet::Raw::Sheets;
 use Pango::Raw::Types;
 
 use GTK::Container;
 
 use GTK::Roles::Types;
-use GTKExtra::Roles::Signals::Sheet;
+use GTKSheet::Roles::Signals::Sheet;
 
 my subset Ancestry
   where GtkSheet | GtkContainer | GtkBuildable | GtkWidget;
 
-class GTKExtra::Sheets is GTK::Container {
+class GTKSheet is GTK::Container {
   also does GTK::Roles::Types;
-  also does GTKExtra::Roles::Signals::Sheets;
+  also does GTKSheet::Roles::Signals::Sheets;
 
   has GtkSheet $!es;
 
@@ -93,17 +93,6 @@ class GTKExtra::Sheets is GTK::Container {
       },
       STORE => sub ($, $adjustment is copy) {
         gtk_sheet_set_hadjustment($!es, $adjustment);
-      }
-    );
-  }
-
-  method traverse_type is rw {
-    Proxy.new(
-      FETCH => sub ($) {
-        gtk_sheet_get_traverse_type($!es);
-      },
-      STORE => sub ($, $ttype is copy) {
-        gtk_sheet_set_traverse_type($!es, $ttype);
       }
     );
   }
@@ -590,15 +579,21 @@ class GTKExtra::Sheets is GTK::Container {
     GtkSheetRange() $urange,
     Int() $mask,
     Int() $width,
-    Int() $line_style
+    Int() $cap_style,
+    Int() $join_style
   ) {
-    my gint ($m, $ls) = self.RESOLVE-INT($mask, $line_style);
-    my guint $width = self.RESOLVE-UINT($width);
-    gtk_sheet_range_set_border($!es, $urange, $m, $w, $ls);
+    my @u = ($width, $cap_style, $join_style);
+    my gint $m = self.RESOLVE-INT($mask);
+    my guint ($w, $cs, $js) = self.RESOLVE-UINT(@u);
+    gtk_sheet_range_set_border($!es, $urange, $m, $w, $cs, $js);
   }
 
-  method range_set_border_color (GtkSheetRange() $urange, GdkColor $color) {
+  method range_set_border_color (GtkSheetRange() $urange, GdkRGBA $color) {
     gtk_sheet_range_set_border_color($!es, $urange, $color);
+  }
+
+  method range_set_css_class(GtkSheetRange() $urange, Str() $class) {
+    gtk_sheet_range_set_css_class($!es, $urange, $class);
   }
 
   method range_set_editable (GtkSheetRange() $urange, Int() $editable) {
