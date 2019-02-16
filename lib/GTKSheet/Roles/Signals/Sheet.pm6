@@ -3,12 +3,13 @@ use v6.c;
 use NativeCall;
 
 use GTK::Compat::Types;
+use GTK::Raw::ReturnedValue;
 use GTK::Raw::Types;
-use GTKExtra::Raw::Types;
+use GTKSheet::Raw::Types;
 
 use GTK::Roles::Signals::Generic;
 
-role GTKExtra::Roles::Signals::Sheet {
+role GTKSheet::Roles::Signals::Sheet {
   also does GTK::Roles::Signals::Generic;
 
   has %!signals-es;
