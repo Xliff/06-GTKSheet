@@ -15,13 +15,32 @@ use GTK::Container;
 
 use GTKSheet::Roles::Signals::Sheet;
 
-my subset Ancestry
-  where GtkSheet | GtkContainer | GtkBuildable | GtkWidget;
+our subset SheetAncestry is export where GtkSheet | ContainerAncestry;
 
 class GTKSheet is GTK::Container {
   also does GTKSheet::Roles::Signals::Sheet;
 
-  has GtkSheet $!es;
+  has GtkSheet $!es handles <
+    active_cell
+    button
+    children
+    clip_range
+    clip_text
+    description
+    drag_cell
+    drag_range
+    entry
+    flags
+    hadjustment
+    range
+    selection_mode
+    sheet_entry
+    state
+    title
+    vadjustment
+    x_drag
+    y_drag
+  >;
 
   method bless(*%attrinit) {
     my $o = self.CREATE.BUILDALL(Empty, %attrinit);
@@ -32,18 +51,14 @@ class GTKSheet is GTK::Container {
   submethod BUILD(:$sheet) {
     my $to-parent;
     given $sheet {
-      when Ancestry {
+      when SheetAncestry {
         $!es = do {
           when GtkSheet {
             $to-parent = nativecast(GtkContainer, $_);
             $_;
           }
-          when GtkContainer {
+          when ContainerAncestry {
             $to-parent = $_;
-            nativecast(GtkSheet, $_);
-          }
-          default {
-            $to-parent = nativecast(GtkContainer, $_);
             nativecast(GtkSheet, $_);
           }
         }
@@ -52,6 +67,11 @@ class GTKSheet is GTK::Container {
       default {
       }
     }
+    self.ADD-PREFIX('GTKSheet');
+  }
+
+  submethod DESTROY {
+    self.downref;
   }
 
   multi method new (Ancestry $sheet) {
@@ -403,11 +423,27 @@ class GTKSheet is GTK::Container {
     gtk_sheet_get_active_cell($!es, $r, $c);
   }
 
-  method get_attributes (Int() $row, Int() $col, GtkSheetCellAttr $attributes) {
+  multi method get_attributes {
+    samewith(self.active_cell.row, self.active_cell.col);
+  }
+  multi method get_attributes (
+    Int() $row,
+    Int() $col
+  ) (
+    my GtkSheetCellAttr $attr .= new;
+    samewith($row, $col, $attr);
+    $attr;
+  }
+  multi method get_attributes (Int() $row, Int() $col, GtkSheetCellAttr $attributes) {
     my gint ($r, $c) = resolve-int($row, $col);
     gtk_sheet_get_attributes($!es, $r, $c, $attributes);
   }
 
+  multi method get_cell_area (Int() $row, Int() $column) {
+    my GdkRectangle $r .= new;
+    samewith($row, $column, $r);
+    $r;
+  }
   method get_cell_area (Int() $row, Int() $column, GdkRectangle $area) {
     my gint ($r, $c) = resolve-int($row, $column);
     gtk_sheet_get_cell_area($!es, $r, $c, $area);
@@ -463,8 +499,12 @@ class GTKSheet is GTK::Container {
     gtk_sheet_get_rows_count($!es);
   }
 
-  method get_selection (GtkSheetState $state, GtkSheetRange() $range) {
+  method get_selection (GtkSheetState $state, GtkSheetRange $range) {
     gtk_sheet_get_selection($!es, $state, $range);
+  }
+
+  method get_type {
+    self.unstable_get_type( gtk_sheet_get_type );
   }
 
   method get_visible_range (GtkSheetRange() $range) {
@@ -532,24 +572,38 @@ class GTKSheet is GTK::Container {
     gtk_sheet_put($!es, $child, $x, $y);
   }
 
-  method range_clear (GtkSheetRange() $range) {
+  method range_clear (GtkSheetRange $range = self.range) {
     gtk_sheet_range_clear($!es, $range);
   }
 
-  method range_delete (GtkSheetRange() $range) {
+  method range_delete (GtkSheetRange $range = self.range) {
     gtk_sheet_range_delete($!es, $range);
   }
 
   method range_get_type {
-    gtk_sheet_range_get_type();
+    self.unstable_get_type( gtk_sheet_range_get_type() );
   }
 
-  method range_set_background (GtkSheetRange $urange, GdkRGBA $color) {
+  multi method range_set_background(GdkRGBA $color) {
+    samewith(self.range, $color);
+  }
+  multi method range_set_background (
+    GtkSheetRange $urange,
+    GdkRGBA $color
+  ) {
     gtk_sheet_range_set_background($!es, $urange, $color);
   }
 
-  method range_set_border (
-    GtkSheetRange() $urange,
+  multi method range_set_border(
+    Int() $mask,
+    Int() $width,
+    Int() $cap_style,
+    Int() $join_style
+  ) {
+    samewith(self.range, $mask, $width, $cap_style, $join_style
+  )
+  multi method range_set_border (
+    GtkSheetRange $urange,
     Int() $mask,
     Int() $width,
     Int() $cap_style,
@@ -561,39 +615,75 @@ class GTKSheet is GTK::Container {
     gtk_sheet_range_set_border($!es, $urange, $m, $w, $cs, $js);
   }
 
-  method range_set_border_color (GtkSheetRange() $urange, GdkRGBA $color) {
+  multi method range_set_color (GdkRGBA $color) {
+    samewith(self.range, $color);
+  }
+  method range_set_border_color (
+    GtkSheetRange $urange = self.range,
+    GdkRGBA $color
+  ) {
     gtk_sheet_range_set_border_color($!es, $urange, $color);
   }
 
-  method range_set_css_class(GtkSheetRange() $urange, Str() $class) {
+  multi method range_set_css_class (Str() $class) {
+    samewith(self.range, $class);
+  }
+  multi method range_set_css_class(
+    GtkSheetRange $urange = self.range,
+    Str() $class
+  ) {
     gtk_sheet_range_set_css_class($!es, $urange, $class);
   }
 
-  method range_set_editable (GtkSheetRange() $urange, Int() $editable) {
+  multi method range_set_editable (Int() $editable) {
+    samewith(self.range, $editable);
+  }
+  method range_set_editable (
+    GtkSheetRange $urange = self.range,
+    Int() $editable
+  ) {
     my gint $e = resolve-int($editable);
     gtk_sheet_range_set_editable($!es, $urange, $e);
   }
 
-  method range_set_font (
-    GtkSheetRange() $urange,
+  multi method range_set_font (PangoFontDescription() $font_desc) {
+    samewith(self.range, $font_desc);
+  }
+  multi method range_set_font (
+    GtkSheetRange $urange,
     PangoFontDescription() $font_desc
   ) {
     gtk_sheet_range_set_font($!es, $urange, $font_desc);
   }
 
-  method range_set_foreground (GtkSheetRange() $urange, GdkRGBA $color) {
+  multi method range_set_foreground(GdkRGBA $color) {
+    samewith(self.range, $color);
+  }
+  method range_set_foreground (
+    GtkSheetRange $urange,
+    GdkRGBA $color
+  ) {
     gtk_sheet_range_set_foreground($!es, $urange, $color);
   }
 
+  multi method range_set_justification (Int() $just) {
+    samewith(self.range, $just);
+  }
   method range_set_justification (
-    GtkSheetRange() $urange,
-    uint32 $just                  # GtkJustification $just
+    GtkSheetRange $urange,
+    Int() $just                  # GtkJustification $just
   ) {
-    my $j = resolve-uint($just);
+    my uint32 $j = resolve-uint($just);
     gtk_sheet_range_set_justification($!es, $urange, $j);
   }
 
-  method range_set_visible (GtkSheetRange() $urange, Int() $visible) {
+  multi method range_set_visible (Int() $visible) {
+    samewith(self.range, $visible);
+  }
+  multi method range_set_visible (
+    GtkSheetRange $urange,
+    Int() $visible)
+  {
     my guint $v = resolve-bool($visible);
     gtk_sheet_range_set_visible($!es, $urange, $v);
   }
@@ -694,7 +784,15 @@ class GTKSheet is GTK::Container {
     gtk_sheet_set_autoscroll($!es, $a);
   }
 
-  method set_cell (
+  multi method set_cell (
+    Int() $justification,         # GtkJustification $justification,
+    Str() $text
+  ) {
+    samewith(
+      self.active_cell.row, self.active_cell.col, $justification, $text
+    );
+  }
+  multi method set_cell (
     Int() $row,
     Int() $col,
     Int() $justification,         # GtkJustification $justification,
@@ -794,43 +892,51 @@ class GTKSheet is GTK::Container {
 
   # »»»»»»»»»»»»»»» COLUMN METHODS ««««««««««««««««««
 
-  method column_button_add_label (Int() $col, Str() $label) {
+  method column_button_add_label (
+    Int() $col = self.active_cell.col,
+    Str() $label
+  ) {
     my gint $c = resolve-int($col);
     gtk_sheet_column_button_add_label($!es, $c, $label);
   }
 
-  method column_button_get_label (Int() $col) {
+  method column_button_get_label (
+    Int() $col = self.active_cell.col
+  ) {
     my gint $c = resolve-int($col);
     gtk_sheet_column_button_get_label($!es, $c);
   }
 
-  method column_button_justify (Int() $col, Int() $justification) {
+  method column_button_justify (
+    Int() $col = self.active_cell.col,
+    Int() $justification
+  ) {
     my gint $c = resolve-int($col);
     my guint $j = resolve-uint($justification);
     gtk_sheet_column_button_justify($!es, $c, $j);
   }
 
-  method column_get (Int() $col) {
+  method column_get (Int() $col = self.active_cell.col) {
     my gint $c = resolve-int($col);
     gtk_sheet_column_get($!es, $c);
   }
 
-  method column_get_datatype (Int() $col) {
+  method column_get_datatype (Int() $col = self.active_cell.col) {
     my gint $c = resolve-int($col);
     gtk_sheet_column_get_datatype($!es, $c);
   }
 
-  method column_get_description (Int() $col) {
+  method column_get_description (Int() $col = self.active_cell.col) {
     my gint $c = resolve-int($col);
     gtk_sheet_column_get_description($!es, $c);
   }
 
-  method column_get_entry_type (Int() $col) {
+  method column_get_entry_type (Int() $col = self.active_cell.col) {
     my gint $c = resolve-int($col);
     gtk_sheet_column_get_entry_type($!es, $c);
   }
 
-  method column_get_format (Int() $col) {
+  method column_get_format (Int() $col = self.active_cell.col) {
     my gint $c = resolve-int($col);
     gtk_sheet_column_get_format($!es, $c);
   }
@@ -839,56 +945,68 @@ class GTKSheet is GTK::Container {
     gtk_sheet_column_get_index($!es);
   }
 
-  method column_get_iskey (Int() $col) {
+  method column_get_iskey (Int() $col = self.active_cell.col) {
     my gint $c = resolve-int($col);
     gtk_sheet_column_get_iskey($!es, $c);
   }
 
-  method column_get_justification (Int() $col) {
+  method column_get_justification (Int() $col = self.active_cell.col) {
     my gint $c = resolve-int($col);
     gtk_sheet_column_get_justification($!es, $c);
   }
 
-  method column_get_readonly (Int() $col) {
+  method column_get_readonly (Int() $col = self.active_cell.col) {
     my gint $c = resolve-int($col);
     gtk_sheet_column_get_readonly($!es, $c);
   }
 
-  method column_get_tooltip_markup (Int() $col) {
+  method column_get_tooltip_markup (Int() $col = self.active_cell.col) {
     my gint $c = resolve-int($col);
     gtk_sheet_column_get_tooltip_markup($!es, $c);
   }
 
-  method column_get_tooltip_text (Int() $col) {
+  method column_get_tooltip_text (Int() $col = self.active_cell.col) {
     my gint $c = resolve-int($col);
     gtk_sheet_column_get_tooltip_text($!es, $c);
   }
 
   method column_get_type {
-    gtk_sheet_column_get_type();
+    self.unstable_get_type( gtk_sheet_column_get_type() );
   }
 
-  method column_get_vjustification (Int() $col) {
+  method column_get_vjustification (Int() $col = self.active_cell.col) {
     my gint $c = resolve-int($col);
     gtk_sheet_column_get_vjustification($!es, $c);
   }
 
-  method column_sensitive (Int() $column) {
+  method column_sensitive (Int() $column = self.active_cell.col) {
     my gint $c = resolve-int($column);
     gtk_sheet_column_sensitive($!es, $c);
   }
 
-  method column_set_datatype (Int() $col, Str() $data_type) {
+  multi method column_set_datatype (Str $data_type) {
+    samewith(self.active_cell.col, $data_type);
+  }
+  multi method column_set_datatype (Int() $col, Str() $data_type) {
     my gint $c = resolve-int($col);
     gtk_sheet_column_set_datatype($!es, $c, $data_type);
   }
 
-  method column_set_description (Int() $col, Str() $description) {
+  multi method column_set_description (Str() $description) {
+    samewith(self.active_cell.col, $description);
+  }
+  multi method column_set_description (
+    Int() $col,
+    Str() $description
+  ) {
     my gint $c = resolve-int($col);
     gtk_sheet_column_set_description($!es, $c, $description);
   }
 
-  method column_set_entry_type (
+  multi method column_set_entry_type (Int() $entry_type) {
+    samewith(self.active_cell.col, $entry_type);
+  }
+  multi method column_set_entry_type (
     Int() $col,
     Int() $entry_type             # GTypeEnum
   ) {
@@ -897,40 +1015,79 @@ class GTKSheet is GTK::Container {
     gtk_sheet_column_set_entry_type($!es, $c, $entry_type);
   }
 
-  method column_set_format (Int() $col, Str() $format) {
+  multi method column_set_format (Str() $format) {
+    samewith(self.active_cell.col, $format);
+  }
+  multi method column_set_format (
+    Int() $col,
+    Str() $format
+  ) {
     my gint $c = resolve-int($col);
     gtk_sheet_column_set_format($!es, $c, $format);
   }
 
-  method column_set_iskey (Int() $col, gboolean $is_key) {
+  multi method column_set_iskey (Int() $is_key) {
+    samewith(self.active_cell.col, $is_key);
+  }
+  multi method column_set_iskey (
+    Int() $col,
+    Int() $is_key
+  ) {
     my gint $c = resolve-int($col);
     my gboolean $ik = resolve-bool($is_key);
     gtk_sheet_column_set_iskey($!es, $c, $ik);
   }
 
-  method column_set_justification (Int() $col, GtkJustification $just) {
+  multi method column_set_justification (Int() $just) {
+    samewith(self.active_cell.col, $just);
+  }
+  method column_set_justification (
+    Int() $col,
+    Int() $just                   # GtkJustification $just
+  ) {
     my gint $c = resolve-int($col);
     my guint $j = resolve-uint($just);
     gtk_sheet_column_set_justification($!es, $c, $j);
   }
 
-  method column_set_readonly (Int() $col, gboolean $is_readonly) {
+  multi method column_set_readonly (Int() $is_readonly) {
+    samewith(self.active_cell.col, $is_readonly);
+  }
+  multi method column_set_readonly (
+    Int() $col,
+    Int() $is_readonly
+  ) {
     my gint $c = resolve-int($col);
     my gboolean $ir = resolve-bool($is_readonly);
     gtk_sheet_column_set_readonly($!es, $c, $ir);
   }
 
-  method column_set_tooltip_markup (Int() $col, Str() $markup) {
+  multi method column_set_tooltip_markup (Str() $markup) {
+    samewith(self.active_cell.col, $markup);
+  }
+  multi method column_set_tooltip_markup (
+    Int() $col,
+    Str() $markup
+  ) {
     my gint $c = resolve-int($col);
     gtk_sheet_column_set_tooltip_markup($!es, $c, $markup);
   }
 
-  method column_set_tooltip_text (Int() $col, Str() $text) {
+  multi method column_set_tooltip_text (Str() $text) {
+    samewith(self.active_cell.col, $text);
+  }
+  method column_set_tooltip_text (
+    Int() $col,
+    Str() $text
+  ) {
     my gint $c = resolve-int($col);
     gtk_sheet_column_set_tooltip_text($!es, $c, $text);
   }
 
-  method column_set_vjustification (Int() $col, Int() $vjust) {
+  method column_set_vjustification (
+    Int() $col = self.active_cell.col,
+    Int() $vjust
+  ) {
     my gint $c = resolve-int($col);
     my guint $vj = resolve-uint($vjust);
     gtk_sheet_column_set_vjustification($!es, $c, $vj);
@@ -940,7 +1097,7 @@ class GTKSheet is GTK::Container {
     gtk_sheet_column_titles_visible($!es);
   }
 
-  method column_visible (Int() $column) {
+  method column_visible (Int() $column = self.active_cell.col) {
     my gint $c = resolve-int($column);
     gtk_sheet_column_visible($!es, $c);
   }
@@ -964,12 +1121,12 @@ class GTKSheet is GTK::Container {
     gtk_sheet_columns_set_sensitivity($!es, $s);
   }
 
-  method get_column_title (Int() $column) {
+  method get_column_title (Int() $column = self.active_cel.col) {
     my gint $c = resolve-int($col);
     gtk_sheet_get_column_title($!es, $c);
   }
 
-  method get_column_width (Int() $column) {
+  method get_column_width (Int() $column = self.active_cell.col) {
     my gint $c = resolve-int($col);
     gtk_sheet_get_column_width($!es, $c);
   }
@@ -978,7 +1135,13 @@ class GTKSheet is GTK::Container {
     gtk_sheet_hide_column_titles($!es);
   }
 
-  method set_column_title (Int() $column, Str() $title) {
+  multi method set_column_title (Str() $title) {
+    samewith(self.active_cell.col, $title);
+  }
+  multi method set_column_title (
+    Int() $column,
+    Str() $title
+  ) {
     my gint $c = resolve-int($col);
     gtk_sheet_set_column_title($!es, $c, $title);
   }
@@ -988,7 +1151,13 @@ class GTKSheet is GTK::Container {
     gtk_sheet_set_column_titles_height($!es, $h);
   }
 
-  method set_column_width (Int() $column, Int() $width) {
+  method set_column_width (Int() $width) {
+    samewith(self.active_cell.col, $width);
+  }
+  method set_column_width (
+    Int() $column,
+    Int() $width
+  ) {
     my gint ($c, $w) = resolve-int($col, $width);
     gtk_sheet_set_column_width($!es, $c, $w);
   }

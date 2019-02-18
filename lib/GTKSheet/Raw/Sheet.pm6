@@ -822,3 +822,9 @@ sub gtk_sheet_set_vjustification (
   is native(sheet)
   is export
   { * }
+
+sub gtk_sheet_get_type ()
+  returns GType
+  is native(sheet)
+  is export
+  { * }
