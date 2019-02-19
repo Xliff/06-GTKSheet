@@ -3,8 +3,12 @@ use v6.c;
 use Method::Also;
 use NativeCall;
 
+use GTK::Compat::Types;
+use GTK::Raw::Types;
+use GTK::Raw::Utils;
 use GTKSheet::Raw::Types;
-use GTKSheet::Raw::Sheets;
+use GTKSheet::Raw::Sheet;
+use GTKSheet::Raw::Column;
 
 # Wrapper required to set property on $!col.
 use GTK::Roles::Properties;
@@ -30,74 +34,76 @@ class GTKSheet::Column {
   }
 
   method datatype is rw {
-    Proxy.new:
-      FETCH => $,          -> { self.get_datatype     },
-      STORE => $, Str() $d -> { self.set_datatype($d) };
+    Proxy.new: {
+      FETCH => -> $            { self.get_datatype     },
+      STORE => -> $, Str() $d  { self.set_datatype($d) }
+    }
   }
 
   method description is rw {
-    Proxy.new:
-      FETCH => $           -> { self.get_description     },
-      STORE => $, Str() $d -> { self.set_description($d) }
+    Proxy.new: {
+      FETCH => -> $            { self.get_description     },
+      STORE => -> $, Str() $d  { self.set_description($d) }
+    }
   }
 
   method entry_type is rw {
     Proxy.new:
-      FETCH => $           -> { self.get_entry_type      },
-      STORE => $ Int() $et -> { self.set_entry_type($et) };
+      FETCH => -> $            { self.get_entry_type      },
+      STORE => -> $, Int() $et { self.set_entry_type($et) };
   }
 
   method format is rw {
     Proxy.new:
-      FETCH => $           -> { self.get_format     },
-      STORE => $, Int() $f -> { self.set_format($f) };
+      FETCH => -> $            { self.get_format     },
+      STORE => -> $, Int() $f  { self.set_format($f) };
   }
 
   method iskey is rw {
     Proxy.new:
-      FETCH => $            -> { self.get_iskey      },
-      STORE => $, Int() $ik -> { self.set_iskey($ik) };
+      FETCH => -> $            { self.get_iskey      },
+      STORE => -> $, Int() $ik { self.set_iskey($ik) };
   }
 
   method justification is rw {
     Proxy.new:
-      FETCH => $           -> { self.get_justification     },
-      STORE => $, Int() $j -> { self.set_justification($j) };
+      FETCH => -> $            { self.get_justification     },
+      STORE => -> $, Int() $j  { self.set_justification($j) };
   }
 
   method readonly is rw {
     Proxy.new:
-      FETCH => $            -> { self.get_readonly      },
-      STORE => $, Int() $ro -> { self.set_readonly($ro) };
+      FETCH => -> $            { self.get_readonly      },
+      STORE => -> $, Int() $ro { self.set_readonly($ro) };
   }
 
   method title is rw {
     Proxy.new:
-      FETCH => $           -> { self.get_title   },
-      STORE => $, Str() $t -> { self.set_title($t) };
+      FETCH => -> $            { self.get_title   },
+      STORE => -> $, Str() $t  { self.set_title($t) };
   }
 
   method tooltip_markup is rw {
     Proxy.new:
-      FETCH => $            -> { self.get_tooltip_markup      },
-      STORE => $, Str() $tt -> { self.set_tooltip_markup($tt) };
+      FETCH => -> $            { self.get_tooltip_markup      },
+      STORE => -> $, Str() $tt { self.set_tooltip_markup($tt) };
   }
 
   method tooltip_text is rw {
     Proxy.new:
-      FETCH => $            -> { self.get_tooltip_text      },
-      STORE => $, Str() $tt -> { self.set_tooltip_text($tt) };
+      FETCH => -> $            { self.get_tooltip_text      },
+      STORE => -> $, Str() $tt { self.set_tooltip_text($tt) };
   }
 
   method vjustification is rw {
-    FETCH => $,          -> { self.get_vjustification     },
-    STORE => $, Int() $v -> { self.set_vjustification($v) };
+    FETCH => -> $,             { self.get_vjustification     },
+    STORE => -> $, Int() $v    { self.set_vjustification($v) };
   }
 
   method width is rw {
     Proxy.new:
-      FETCH => $           -> { self.get_column_width     },
-      STORE => $, Int() $w -> { self.set_column_width($w) };
+      FETCH =>  -> $           { self.get_column_width     },
+      STORE =>  -> $, Int() $w { self.set_column_width($w) };
   }
 
   # So these are scraped and adjusted from GtkSheet and are here for
@@ -198,6 +204,7 @@ class GTKSheet::Column {
   }
 
   method set_readonly (Int() $is_readonly) {
+    my gboolean $ir = resolve-bool($is_readonly);
     gtk_sheet_column_set_readonly($!sheet, $!c, $ir);
   }
 
