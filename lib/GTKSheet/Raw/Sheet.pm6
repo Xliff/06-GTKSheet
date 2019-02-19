@@ -222,7 +222,7 @@ sub gtk_sheet_entry_select_region (
 
 sub gtk_sheet_entry_signal_connect_changed (
   GtkSheet $sheet,
-  GCallback $handler
+  &handler (Pointer, Pointer)
 )
   returns gulong
   is native(sheet)

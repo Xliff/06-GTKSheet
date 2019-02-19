@@ -12,6 +12,7 @@ use GTKSheet::Raw::Sheet;
 use Pango::Raw::Types;
 
 use GTK::Container;
+use GTKSheet::Column;
 
 use GTKSheet::Roles::Signals::Sheet;
 
@@ -406,8 +407,8 @@ class GTKSheet is GTK::Container {
     gtk_sheet_entry_select_region($!es, $sp, $ep);
   }
 
-  method entry_signal_connect_changed (GCallback $handler) {
-    gtk_sheet_entry_signal_connect_changed($!es, $handler);
+  method entry_signal_connect_changed (&handler) {
+    gtk_sheet_entry_signal_connect_changed($!es, &handler);
   }
 
   method entry_signal_disconnect_by_func (GCallback $handler) {
@@ -918,7 +919,11 @@ class GTKSheet is GTK::Container {
 
   method column_get (Int() $col = self.active_cell.col) {
     my gint $c = resolve-int($col);
-    gtk_sheet_column_get($!es, $c);
+    GtkSheet::Column.new(
+      gtk_sheet_column_get($!es, $c)
+      $!es,
+      $c
+    );
   }
 
   method column_get_datatype (Int() $col = self.active_cell.col) {
