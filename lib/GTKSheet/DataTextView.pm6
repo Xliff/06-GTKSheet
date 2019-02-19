@@ -11,6 +11,12 @@ our subset DataTextViewAncestry
 class GTKSheet::DataTextView is GTK::TextView {
   has GtkDataTextView $!dtv;
 
+  method bless(*%attrinit) {
+    my $o = self.CREATE.BUILDALL(Empty, %attrinit);
+    $o.setType('GTKSheet::DataTextView');
+    $o;
+  }
+
   submethod BUILD (:$textview) {
     given ($textview) {
       when DataTextViewAncestry {

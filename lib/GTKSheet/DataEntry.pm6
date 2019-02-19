@@ -11,6 +11,12 @@ our subset DataEntryAncestry
 class GTKSheet::DataEntry is GTK::Entry {
   has GtkDataEntry $!de;
 
+  method bless(*%attrinit) {
+    my $o = self.CREATE.BUILDALL(Empty, %attrinit);
+    $o.setType('GTKSheet::DataEntry');
+    $o;
+  }
+
   submethod BUILD (:$entry) {
     given $entry {
       when DataEntryAncestry {

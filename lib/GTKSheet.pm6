@@ -11,6 +11,7 @@ use GTKSheet::Raw::Types;
 use GTKSheet::Raw::Sheet;
 use Pango::Raw::Types;
 
+use GTK::Adjustment;
 use GTK::Container;
 use GTKSheet::Column;
 
@@ -22,25 +23,12 @@ class GTKSheet is GTK::Container {
   also does GTKSheet::Roles::Signals::Sheet;
 
   has GtkSheet $!es handles <
-    active_cell
-    button
-    children
-    clip_range
-    clip_text
-    description
-    drag_cell
-    drag_range
-    entry
-    flags
-    hadjustment
-    range
-    selection_mode
-    sheet_entry
-    state
-    title
-    vadjustment
-    x_drag
-    y_drag
+    active_cell     button children   clip_range
+    clip_text       description       drag_cell
+    drag_range      entry             flags
+    hadjustment     range             selection_mode
+    sheet_entry     state             title
+    vadjustment     x_drag            y_drag
   >;
 
   method bless(*%attrinit) {
@@ -94,9 +82,10 @@ class GTKSheet is GTK::Container {
     Int() $rows,
     Int() $columns,
     Str() $title,
-    GTypeEnum $entry_type
+    Int() $entry_type
   ) {
-    my guint ($r, $c, $et) = resolve-uint($rows, $columns, $entry_type);
+    my guint ($r, $c, $et) = resolve-uint($rows, $columns);
+    my uint64 $et = resolve-ulong($entry_type);
     gtk_sheet_new_with_custom_entry($r, $c, $title, $et);
   }
 
@@ -105,7 +94,7 @@ class GTKSheet is GTK::Container {
       FETCH => sub ($) {
         gtk_sheet_get_entry_text($!es);
       },
-      STORE => sub ($, $text is copy) {
+      STORE => sub ($, Str() $text is copy) {
         gtk_sheet_set_entry_text($!es, $text);
       }
     );
@@ -114,9 +103,9 @@ class GTKSheet is GTK::Container {
   method hadjustment is rw {
     Proxy.new(
       FETCH => sub ($) {
-        gtk_sheet_get_hadjustment($!es);
+        GTK::Adjustment.new( gtk_sheet_get_hadjustment($!es) );
       },
-      STORE => sub ($, $adjustment is copy) {
+      STORE => sub ($, GtkAdjustmenet() $adjustment is copy) {
         gtk_sheet_set_hadjustment($!es, $adjustment);
       }
     );
@@ -125,9 +114,9 @@ class GTKSheet is GTK::Container {
   method vadjustment is rw {
     Proxy.new(
       FETCH => sub ($) {
-        gtk_sheet_get_vadjustment($!es);
+        GTK::Adjustment.new( gtk_sheet_get_vadjustment($!es) );
       },
-      STORE => sub ($, $adjustment is copy) {
+      STORE => sub ($, GtkAdjustment() $adjustment is copy) {
         gtk_sheet_set_vadjustment($!es, $adjustment);
       }
     );
@@ -136,10 +125,11 @@ class GTKSheet is GTK::Container {
   method vjustification is rw {
     Proxy.new(
       FETCH => sub ($) {
-        gtk_sheet_get_vjustification($!es);
+        GtkSheetVerticalJustification( gtk_sheet_get_vjustification($!es) );
       },
-      STORE => sub ($, $vjust is copy) {
-        gtk_sheet_set_vjustification($!es, $vjust);
+      STORE => sub ($, Int() $vjust is copy) {
+        my guint $vj = resolve-uint($vjust)
+        gtk_sheet_set_vjustification($!es, $vj);
       }
     );
   }
@@ -360,7 +350,7 @@ class GTKSheet is GTK::Container {
   }
 
   method change_entry (Int() $entry_type) {
-    my uint64 $et = resolve-long($entry_type);
+    my uint64 $et = resolve-ulong($entry_type);
     gtk_sheet_change_entry($!es, $et);
   }
 
@@ -388,7 +378,8 @@ class GTKSheet is GTK::Container {
     Str() $title,
     Int() $entry_type
   ) {
-    my guint ($r, $c, $et) = resolve-uint($rows, $columns, $entry_type);
+    my guint ($r, $c) = resolve-uint($rows, $columns);
+    my uint64 $et = resolve-ulong($entry_type);
     gtk_sheet_construct_with_custom_entry($!es, $r, $c, $title, $et);
   }
 
