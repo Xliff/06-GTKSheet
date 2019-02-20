@@ -1,0 +1,10 @@
+.precomp/
+dead/
+.touch/
+.idea/
+LastBuildResults.*
+*.bak
+*.bump
+*~
+examples/
+test-new

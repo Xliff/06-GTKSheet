@@ -21,12 +21,12 @@ role GTKSheet::Roles::Signals::Sheet {
     &handler?
   ) {
     my $hid;
-    %!signals-es //= do {
+    %!signals-es{$signal} //= do {
       my $s = Supplier.new;
       $hid = g-connect-activate($obj, $signal,
         -> $, $i1, $i2, $ud --> gboolean {
           CATCH {
-            default { $s.quit($_) }
+            default { note($_) }
           }
 
           my $r = ReturnedValue.new;
@@ -48,12 +48,12 @@ role GTKSheet::Roles::Signals::Sheet {
     &handler?
   ) {
     my $hid;
-    %!signals-es //= do {
+    %!signals-es{$signal} //= do {
       my $s = Supplier.new;
       $hid = g-connect-intint($obj, $signal,
         -> $, $i1, $i2, $ud {
           CATCH {
-            default { $s.quit($_) }
+            default { note($_) }
           }
 
           $s.emit( [self, $i1, $i2, $ud] );
@@ -73,12 +73,12 @@ role GTKSheet::Roles::Signals::Sheet {
     &handler?
   ) {
     my $hid;
-    %!signals-es //= do {
+    %!signals-es{$signal} //= do {
       my $s = Supplier.new;
       $hid = g-connect-clip-range($obj, $signal,
         -> $, $gsre, $ud {
           CATCH {
-            default { $s.quit($_) }
+            default { note($_) }
           }
 
           $s.emit( [self, $gsre, $ud] );
@@ -98,12 +98,12 @@ role GTKSheet::Roles::Signals::Sheet {
     &handler?
   ) {
     my $hid;
-    %!signals-es //= do {
+    %!signals-es{$signal} //= do {
       my $s = Supplier.new;
       $hid = g-connect-sheet-event($obj, $signal,
         -> $, $ge, $ud --> gboolean {
           CATCH {
-            default { $s.quit($_) }
+            default { note($_) }
           }
 
           my $r = ReturnedValue.new;
@@ -125,12 +125,12 @@ role GTKSheet::Roles::Signals::Sheet {
     &handler?
   ) {
     my $hid;
-    %!signals-es //= do {
+    %!signals-es{$signal} //= do {
       my $s = Supplier.new;
       $hid = g-connect-move-cursor($obj, $signal,
         -> $, $gmsp, $gt, $gn, $ud {
           CATCH {
-            default { $s.quit($_) }
+            default { note($_) }
           }
 
           $s.emit( [self, $gmsp, $gt, $gn, $ud] );
@@ -150,12 +150,12 @@ role GTKSheet::Roles::Signals::Sheet {
     &handler?
   ) {
     my $hid;
-    %!signals-es //= do {
+    %!signals-es{$signal} //= do {
       my $s = Supplier.new;
       $hid = g-connect-move-range($obj, $signal,
         -> $, $sr1, $sr2, $ud {
           CATCH {
-            default { $s.quit($_) }
+            default { note($_) }
           }
 
           $s.emit( [self, $sr1, $sr2, $ud] );
@@ -175,12 +175,12 @@ role GTKSheet::Roles::Signals::Sheet {
     &handler?
   ) {
     my $hid;
-    %!signals-es //= do {
+    %!signals-es{$signal} //= do {
       my $s = Supplier.new;
       $hid = g-connect-select-range($obj, $signal,
         -> $, $gsre, $ud {
           CATCH {
-            default { $s.quit($_) }
+            default { note($_) }
           }
 
           my $r = ReturnedValue.new;
@@ -202,12 +202,12 @@ role GTKSheet::Roles::Signals::Sheet {
     &handler?
   ) {
     my $hid;
-    %!signals-es //= do {
+    %!signals-es{$signal} //= do {
       my $s = Supplier.new;
       $hid = g-connect-set-scroll-adjustments($obj, $signal,
         -> $, $a1, $a2, $ud {
           CATCH {
-            default { $s.quit($_) }
+            default { note($_) }
           }
 
           $s.emit( [self, $a1, $a2, $ud] );
@@ -227,12 +227,12 @@ role GTKSheet::Roles::Signals::Sheet {
     &handler?
   ) {
     my $hid;
-    %!signals-es //= do {
+    %!signals-es{$signal} //= do {
       my $s = Supplier.new;
       $hid = g-connect-traverse($obj, $signal,
         -> $, $i1, $i2, $p1, $p2, $ud --> gboolean {
           CATCH {
-            default { $s.quit($_) }
+            default { note($_) }
           }
 
           my $r = ReturnedValue.new;

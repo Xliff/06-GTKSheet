@@ -30,6 +30,7 @@ class GTKSheet is GTK::Container {
     sheet_entry     state             title
                     x_drag            y_drag
   >;
+  has $!esp;
 
   method bless(*%attrinit) {
     my $o = self.CREATE.BUILDALL(Empty, %attrinit);
@@ -57,6 +58,7 @@ class GTKSheet is GTK::Container {
       }
     }
     self.ADD-PREFIX('GTKSheet');
+    $!esp = nativecast(Pointer, $!es)       # GTK::Roles::Signals::Sheet
   }
 
   submethod DESTROY {
@@ -143,122 +145,123 @@ class GTKSheet is GTK::Container {
   # Is originally:
   # GtkSheet, gint, gint, gpointer --> gboolean
   method activate {
-    self.connect-activate($!es);
+    self.connect-activate($!esp);
   }
 
   # Is originally:
   # GtkSheet, gint, gint, gpointer --> void
   method changed {
-    self.connect-intint($!es, 'changed');
+    self.connect-intint($!esp, 'changed');
   }
 
   # Is originally:
   # GtkSheet, gint, gint, gpointer --> void
   method clear-cell {
-    self.connect-intint($!es, 'clear-cell');
+    self.connect-intint($!esp, 'clear-cell');
   }
 
   # Is originally:
   # GtkSheet, GtkSheetRange, gpointer --> void
   method clip-range {
-    self.connect-clip-range($!es);
+    self.connect-clip-range($!esp);
   }
 
   # Is originally:
   # GtkSheet, gint, gint, gpointer --> gboolean
   method deactivate {
-    self.connect-activate($!es, 'deactivate');
+    self.connect-activate($!esp, 'deactivate');
   }
 
   # Is originally:
   # GtkSheet, GdkEvent, gpointer --> gboolean
   method enter-pressed {
-    self.connect-sheet-event($!es, 'enter-pressed');
+    self.connect-sheet-event($!esp, 'enter-pressed');
   }
 
   # Is originally:
   # GtkSheet, GdkEvent, gpointer --> gboolean
   method entry-focus-in {
-    self.connect-sheet-event($!es, 'entry-focus-in');
+    self.connect-sheet-event($!esp, 'entry-focus-in');
   }
 
   # Is originally:
   # GtkSheet, GdkEvent, gpointer --> gboolean
   method entry-focus-out {
-    self.connect-sheet-event($!es, 'entry-focus-out');
+    self.connect-sheet-event($!esp, 'entry-focus-out');
   }
 
   # Is originally:
   # GtkSheet, GtkMovementStep, gint, gboolean, gpointer --> void
   method move-cursor {
-    self.connect-move-cursor($!es);
+    self.connect-move-cursor($!esp);
   }
 
   # Is originally:
   # GtkSheet, GtkSheetRange, GtkSheetRange, gpointer --> void
   method move-range {
-    self.connect-move-range($!es);
+    self.connect-move-range($!esp);
   }
 
   # Is originally:
   # GtkSheet, gint, gint, gpointer --> void
   method new-column-width {
-    self.connect-intint($!es, 'new-column-width');
+    self.connect-intint($!esp, 'new-column-width');
   }
 
   # Is originally:
   # GtkSheet, gint, gint, gpointer --> void
   method new-row-height {
-    self.connect-intint($!es, 'new-row-height');
+    self.connect-intint($!esp, 'new-row-height');
   }
 
   # Is originally:
   # GtkSheet, GtkMenu, gpointer --> void
   method populate-popup {
-    self.connect-menu($!es, 'populate-popup');
+    self.connect-menu($!esp, 'populate-popup');
   }
 
   # Is originally:
   # GtkSheet, GtkSheetRange, GtkSheetRange, gpointer --> void
   method resize-range {
-    self.connect-move-range($!es, 'resize-range');
+    self.connect-move-range($!esp, 'resize-range');
   }
 
   # Is originally:
   # GtkSheet, gint, gpointer --> void
   method select-column {
-    self.connect-int($!es, 'select-column');
+    self.connect-int($!esp, 'select-column');
   }
 
   # Is originally:
   # GtkSheet, GtkSheetRange, gpointer --> void
   method select-range {
-    self.connect-select-range($!es);
+    self.connect-select-range($!esp);
   }
 
   # Is originally:
   # GtkSheet, gint, gpointer --> void
   method select-row {
-    self.connect-int($!es, 'select-row');
+    self.connect-int($!esp, 'select-row');
   }
 
   # Is originally:
   # GtkSheet, gint, gint, gpointer --> void
   method set-cell {
-    self.connect-intint($!es, 'set-cell');
+    self.connect-intint($!esp, 'set-cell');
   }
 
   # Is originally:
   # GtkSheet, GtkAdjustment, GtkAdjustment, gpointer --> void
   method set-scroll-adjustments {
-    self.connect-set-scroll-adjustments($!es);
+    self.connect-set-scroll-adjustments($!esp);
   }
 
   # Is originally:
   # GtkSheet, gint, gint, gpointer, gpointer, gpointer --> gboolean
   method traverse {
-    self.connect-traverse($!es);
+    self.connect-traverse($!esp);
   }
+
 
   method add_column (Int() $ncols) {
     my $nc = resolve-uint($ncols);
