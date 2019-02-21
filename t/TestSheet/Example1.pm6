@@ -1,5 +1,6 @@
 use v6.c;
 
+use GTK::Compat::RGBA;
 use GTK::Compat::Types;
 use GTK::Raw::Types;
 use GTKSheet::Raw::Types;
@@ -7,12 +8,14 @@ use GTKSheet::Raw::Types;
 use TestSheet;
 
 use GTK::Compat::Pixbuf;
+use GTK::Button;
 use GTK::Calendar;
+use GTK::Image;
 
 unit package TestSheet::Example1;
 
 sub build_example1($s) is export {
-  my $color = GTK::Compat::RGBA.new;
+  my $color = GTK::Compat::RGBA.new(0, 0, 0);
 
   $s.name = 'example1';
 
@@ -33,7 +36,7 @@ sub build_example1($s) is export {
 
   $s.row_button_add_label(0, "This is\na multiline\nlabel");
   $s.row_button_add_label(1, 'This is a long label');
-  $s.row_set_tooltip_markupl(1, 'This row has a <b>long label</b>.');
+  $s.row_set_tooltip_markup(1, 'This row has a <b>long label</b>.');
   $s.row_button_justify(0, GTK_JUSTIFY_RIGHT);
 
   my $range = GtkSheetRange.new(1, 1, 2, 3);
@@ -94,19 +97,19 @@ ML
 
   my @bullets;
   for ^5 {
-    @bullets.push: GTK::Image.new_from_pixbuf(%pixbuf<bullet>);
+    @bullets.push( GTK::Image.new_from_pixbuf( %pixbuf<bullet>) );
     @bullets[$_].show;
     #my $area = $s.get_cell_area(4 + $_, 0);
     $s.attach(@bullets[$_], 4 + $_, 0, GTK_EXPAND, GTK_EXPAND, 0, 0);
   }
-  @bullets.push = GTK::Image.new_from_pixbuf(%pixbuf<bullet>);
+  @bullets.push( GTK::Image.new_from_pixbuf( %pixbuf<bullet>) );
   @bullets[5].show;
   #my $area = $s.get_cell_area(10, 0);
   $s.attach(@bullets[4], 10, 0, GTK_EXPAND, GTK_EXPAND, 0, 0);
 
-  my $smile = GTK::Image.new_from_pixbuf(%pixbuf<smile>);
+  my $smile = GTK::Image.new_from_pixbuf( %pixbuf<smile> );
   $smile.show;
-  $s.sheet_button_attach($smile, -1, 5);
+  $s.button_attach($smile, -1, 5);
   $s.column_set_tooltip_markup(
     5, 'This column has a <b>Smiley!</b> in the title button'
   );

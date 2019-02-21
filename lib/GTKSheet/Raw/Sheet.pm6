@@ -586,7 +586,17 @@ sub gtk_sheet_row_sensitive (GtkSheet $sheet, gint $row)
   is native(sheet)
   is export
   { * }
-
+  
+sub gtk_sheet_row_set_tooltip_markup(GtkSheet $sheet, gint $row, Str $markup)
+  is native(sheet)
+  is export
+  { * }
+  
+sub gtk_sheet_row_set_tooltip_text(GtkSheet $sheet, gint $row, Str $text)
+  is native(sheet)
+  is export
+  { * }
+ 
 sub gtk_sheet_row_titles_visible (GtkSheet $sheet)
   returns uint32
   is native(sheet)
@@ -660,6 +670,11 @@ sub gtk_sheet_set_autoresize_rows (GtkSheet $sheet, gboolean $autoresize)
   { * }
 
 sub gtk_sheet_set_autoscroll (GtkSheet $sheet, gboolean $autoscroll)
+  is native(sheet)
+  is export
+  { * }
+  
+sub gtk_sheet_set_css_class (GtkSheet $sheet, Str $class) 
   is native(sheet)
   is export
   { * }

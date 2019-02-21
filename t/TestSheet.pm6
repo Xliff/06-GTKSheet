@@ -27,6 +27,12 @@ our @col_names is export = ('A', 'B', *.succ .. *);
 our constant DEFAULT_SPACE     is export = 8;
 our constant DEFAULT_PRECISION is export = 3;
 
+sub change_page($, $, $pagenum, $) is export {
+  say "Current page: { $pagenum }";
+  my $c = %widgets<sheets>[ %widgets<notebook>.current_page ];
+  %widgets<entry>.text = $c.entry_text ?? $c.entry_text !! '';
+}
+
 sub popup_activated ( $i --> gint ) {
   my $c = %widgets<sheets>[ %widgets<notebook>.current_page ];
   given $i {
@@ -314,6 +320,8 @@ sub activate_sheet_cell ($sheet, $r, $c --> gint) is export {
     when GTK_JUSTIFY_CENTER { justify('center') }
     default                 { justify(  'left') }
   }
+  
+  # Note: Font button does not reflect font of current cell. Should fix!
 
   1;
 }

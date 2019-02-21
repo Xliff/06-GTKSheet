@@ -26,7 +26,8 @@ class GTKSheet is GTK::Container {
     active_cell     button children
                     description       drag_cell
     drag_range      entry             flags
-                    range             selection_mode
+    maxcol          maxrow            range             
+    selection_mode
     sheet_entry     state             title
                     x_drag            y_drag
   >;
@@ -89,12 +90,6 @@ class GTKSheet is GTK::Container {
     my guint ($r, $c) = resolve-uint($rows, $columns);
     my uint64 $et = resolve-ulong($entry_type);
     gtk_sheet_new_with_custom_entry($r, $c, $title, $et);
-  }
-
-  method clip_range is rw {
-    Proxy.new:
-      FETCH => -> $                   { $!es.clip_range          },
-      STORE => -> $, GdkRectangle $cr { self.set_clip_range($cr) }
   }
 
   method entry_text is rw {
@@ -363,7 +358,7 @@ class GTKSheet is GTK::Container {
     gtk_sheet_change_entry($!es, $et);
   }
 
-  method set_clip_range (GtkSheetRange() $clip_range) {
+  method clip_range (GtkSheetRange() $clip_range) {
     gtk_sheet_clip_range($!es, $clip_range);
   }
 
@@ -750,6 +745,16 @@ class GTKSheet is GTK::Container {
     my uint32 $s = resolve-bool($sensitive);
     gtk_sheet_rows_set_sensitivity($!es, $s);
   }
+  
+  method row_set_tooltip_markup (Int() $row, Str() $markup) {
+    my gint32 $r = resolve-int($row);
+    gtk_sheet_row_set_tooltip_markup($!es, $r, $markup);
+  }
+  
+  method row_set_tooltip_text (Int() $row, Str() $text) {
+    my gint32 $r = resolve-int($row);
+    gtk_sheet_row_set_tooltip_text($!es, $r, $text);
+  }
 
   method select_column (Int() $column) {
     my gint $c = resolve-int($column);
@@ -817,6 +822,10 @@ class GTKSheet is GTK::Container {
   method set_clip_text (Int() $clip_text) {
     my guint $ct = resolve-bool($clip_text);
     gtk_sheet_set_clip_text($!es, $ct);
+  }
+  
+  method set_css_class(Str() $class) {
+    gtk_sheet_set_css_class($!es, $class);
   }
 
   method set_description (Str() $description) {
