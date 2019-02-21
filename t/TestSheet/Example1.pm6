@@ -29,6 +29,8 @@ sub build_example1($s) is export {
   $color.parse('light blue');
   $s.set_grid($color);
 
+  @col_names[0].say;
+  # $s.maxcol is 0 -- this should be solved.
   for 0..$s.maxcol {
     $s.column_button_add_label($_, @col_names[$_]);
     $s.set_column_title($_, @col_names[$_]);
@@ -92,20 +94,20 @@ ML
           $s.resize-range.tap(-> *@a { resize_handler( |@a[1..2] ) });
             $s.move-range.tap(-> *@a {   move_handler( |@a[1..2] ) });
 
-  my $cal = GTK::Calendar.new;
-  $cal.show;
+  %widgets<calendar> = GTK::Calendar.new;
+  %widgets<calendar>.show;
 
   my @bullets;
   for ^5 {
     @bullets.push( GTK::Image.new_from_pixbuf( %pixbuf<bullet>) );
-    @bullets[$_].show;
     #my $area = $s.get_cell_area(4 + $_, 0);
     $s.attach(@bullets[$_], 4 + $_, 0, GTK_EXPAND, GTK_EXPAND, 0, 0);
+    @bullets[$_].show;
   }
   @bullets.push( GTK::Image.new_from_pixbuf( %pixbuf<bullet>) );
-  @bullets[5].show;
   #my $area = $s.get_cell_area(10, 0);
   $s.attach(@bullets[4], 10, 0, GTK_EXPAND, GTK_EXPAND, 0, 0);
+  @bullets[5].show;
 
   my $smile = GTK::Image.new_from_pixbuf( %pixbuf<smile> );
   $smile.show;
@@ -124,4 +126,5 @@ ML
   $s.attach($show_button, 12, 2, GTK_FILL, GTK_FILL, 5, 5);
 
   $show_button.clicked.tap({ show_child });
+  $s.queue_draw;
 }

@@ -357,7 +357,7 @@ sub g-connect-set-scroll-adjustments(
 sub g-connect-traverse(
   Pointer $app,
   Str $name,
-  &handler (Pointer, gint, gint, gpointer, gpointer, Pointer --> gboolean),
+  &handler (Pointer, gint, gint, CArray[gint], CArray[gint], Pointer --> gboolean),
   Pointer $data,
   uint32 $flags
 )

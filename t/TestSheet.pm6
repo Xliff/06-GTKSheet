@@ -22,7 +22,7 @@ our %xpm       is export;
 our %pixbuf    is export;
 our $sheet_css is export;
 our %widgets   is export;
-our @col_names is export = ('A', 'B', *.succ .. *);
+our @col_names is export = ('A'..'Z');
 
 our constant DEFAULT_SPACE     is export = 8;
 our constant DEFAULT_PRECISION is export = 3;
@@ -246,13 +246,13 @@ sub alarm_deactivate($s, $r, $c) is export {
   1;
 }
 
-sub alarm_traverse($r, $c, $nr is rw, $nc is rw) is export {
-  printf "TRAVERSE: %d %d %d %d\n", $r, $c, $nr, $nc;
+sub alarm_traverse($r, $c, $nr, $nc) is export {
+  printf "TRAVERSE: %d %d %d %d\n", $r, $c, $nr[0], $nc[0];
   1
 }
 
 sub show_child is export {
-  unless %widgets<calendar>.get_mapped {
+  unless %widgets<calendar>.mapped {
     %widgets<sheets>[0].attach_floating(%widgets<calendar>, 2, 7);
   }
 }
