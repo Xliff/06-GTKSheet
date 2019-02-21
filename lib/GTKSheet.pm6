@@ -441,7 +441,8 @@ class GTKSheet is GTK::Container {
     GtkSheetCellAttr $attributes
   ) {
     my gint ($r, $c) = resolve-int($row, $col);
-    gtk_sheet_get_attributes($!es, $r, $c, $attributes);
+    my $rc = gtk_sheet_get_attributes($!es, $r, $c, $attributes);
+    $rc;
   }
 
   multi method get_cell_area (Int() $row, Int() $column) {

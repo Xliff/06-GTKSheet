@@ -64,12 +64,13 @@ sub MAIN is export {
       'Hide Row Titles', 'Hide Column Titles',
       'Show Row Titles', 'Show Column Titles'
     ) {
-      %widgets<button_titles>.push: GTK::Button.new_with_label($_);
+      my $bn = $_;
+      %widgets<button_titles>.push: GTK::Button.new_with_label($bn);
       %widgets<show_hide_box>.pack_start(
         %widgets<button_titles>[* - 1], True, True
       );
       %widgets<button_titles>[* - 1].clicked.tap({
-        ::('&' ~ .lc.subst(' ', '_'))
+        ::( '&' ~ $bn.lc.subst(' ', '_', :g) )()
       });
     }
     %widgets<main_vbox>.pack_start(%widgets<show_hide_box>, False, True);
@@ -82,7 +83,6 @@ sub MAIN is export {
     %widgets<fontbutton>.font-set.tap({ new_font() });
     %widgets<fontitem>.add( %widgets<fontbutton> );
     %widgets<toolbar>.insert(%widgets<fontitem>);
-
 
     for <left center right> {
       %widgets<justify_buttons>{$_} = GTK::ToggleButton.new;
@@ -108,7 +108,6 @@ sub MAIN is export {
     %widgets<entry> = GTK::Entry.new;
     %widgets<status_box>.pack_start(%widgets<entry>, True, True);
 
-
     %widgets<notebook>.tab_pos = GTK_POS_BOTTOM;
     %widgets<main_vbox>.pack_start(%widgets<notebook>, True, True);
 
@@ -125,9 +124,6 @@ sub MAIN is export {
       %widgets<sheets>[$_].entry_signal_connect_changed(
         -> $, $ { sheet_entry_changed_handler() }
       ) unless $_ == 3;
-
-      say "{ %widgets<sheets>[$_] }";
-      say "{ %widgets<sheets>[$_].activate // 'NA' }";
 
       %widgets<sheets>[$_].activate.tap( -> *@a {
         @a[*-1].r = activate_sheet_cell( %widgets<sheets>[$_], |@a[1..2] )

@@ -7,10 +7,14 @@ use GTK::Compat::Cairo;
 use GTK::Compat::Types;
 use GTK::Compat::KeySyms;
 use GTK::Raw::Types;
-use GTK::Utils::MenuBuilder;
 use GTKSheet::Raw::Types;
 use Pango::FontDescription;
 use Pango::Raw::Types;
+
+use GTK::Entry;
+use GTKSheet::DataEntry;
+
+use GTK::Utils::MenuBuilder;
 
 unit package TestSheet;
 
@@ -24,7 +28,7 @@ our constant DEFAULT_SPACE     is export = 8;
 our constant DEFAULT_PRECISION is export = 3;
 
 sub popup_activated ( $i --> gint ) {
-  my $c = %widgets<sheets>[ %widgets<notebook>.get_current_page ];
+  my $c = %widgets<sheets>[ %widgets<notebook>.current_page ];
   given $i {
     when 'Add Column'   { $c.add_column(1) }
     when 'Add Row'      { $c.add_row(1)    }
@@ -155,7 +159,7 @@ sub clipboard_handler($s, $ek is copy) is export {
 }
 
 sub sheet_entry_changed_handler is export {
-  my $current = %widgets<sheets>[ %widgets<notebook>.get_current_page ];
+  my $current = %widgets<sheets>[ %widgets<notebook>.current_page ];
   return unless $current.has_focus;
 
   my $t = $current.get_entry;
@@ -254,13 +258,13 @@ sub set_cell($w) is export {
 
 sub entry_changed is export {
   return unless %widgets<entry>.has_focus;
-  my $current = %widgets<sheets>[ %widgets<notebook>.get_current_page ];
+  my $current = %widgets<sheets>[ %widgets<notebook>.current_page ];
   $current.entry_text = %widgets<entry>.text if %widgets<entry>.text;
 }
 
 sub activate_sheet_entry is export {
-  my $current = %widgets<sheets>[ %widgets<notebook>.get_current_page ];
-  my ($r, $c) = ($current.active_cel.row, $current.active_cell.col);
+  my $current = %widgets<sheets>[ %widgets<notebook>.current_page ];
+  my ($r, $c) = ($current.active_cell.row, $current.active_cell.col);
   $current.set_cell_text($r, $c, $current.entry_text);
 }
 
@@ -271,28 +275,37 @@ sub justify($j) is export {
     when 'right'  { GTK_JUSTIFY_RIGHT  }
     when 'center' { GTK_JUSTIFY_CENTER }
   }
-  my $current = %widgets<sheets>[ %widgets<notebook>.get_current_page ];
+  my $current = %widgets<sheets>[ %widgets<notebook>.current_page ];
   %widgets<justify_buttons>{$j}.active = True;
-  $current.range_set_justification($current, $current.range, $jv);
+  $current.range_set_justification($jv);
 }
 
 sub activate_sheet_cell ($sheet, $r, $c --> gint) is export {
   my $sheet_entry = GTK::Widget.new($sheet.get_entry);
   my $cell;
-
+  
+  given $sheet_entry.get_gobject_type {
+    when GTK::Entry.get_type { 
+      $sheet_entry = GTK::Entry.new($sheet.get_entry)
+    }
+    when GTKSheet::DataEntry.get_type {
+      $sheet_entry = GTKSheet::DataEntry.new($sheet.get_entry);
+    }
+  }
+  
   %widgets<location>.text = do {
     my $col_title = $sheet.get_column_title($c);
     $col_title ??
       "{ $col_title }:{ $r }" !! "ROW: { $r } COLUMN: { $c }";
   }
-
+  say "LOCATION: { %widgets<location>.text }";
+  
   %widgets<entry>.max_length = $sheet_entry.max_length
-    if $sheet_entry.check_gobject_type(GTK::Entry.get_type) ||
-       $sheet_entry.check_gobject_type(GtkSheet::DataType.get_type);
+    if $sheet_entry ~~ <GTK::Entry GTKSheet::DataEntry>.any;
 
   %widgets<entry>.text = $sheet.entry_text if $sheet.entry_text;
 
-  my $attr = $sheet.get_attributes;
+  my $attr = $sheet.get_attributes($r, $c);
   %widgets<entry>.editable = $attr.is_editable;
 
   given $attr.justification {
@@ -306,7 +319,7 @@ sub activate_sheet_cell ($sheet, $r, $c --> gint) is export {
 }
 
 sub change_border($b) is export {
-  my $current = %widgets<sheets>[ %widgets<notebook>.get_current_page ];
+  my $current = %widgets<sheets>[ %widgets<notebook>.current_page ];
   my $range = $current.range;
   my ($border_width, $border_mask, $auxval) = (3);
 
@@ -390,7 +403,7 @@ sub change_border($b) is export {
 
 sub change_color($c, $is-fg) is export {
   my $w := $is-fg ?? %widgets<fg_pixmap> !! %widgets<bg_pixmap>;
-  my $current = %widgets<sheets>[ %widgets<notebook>.get_current_page ];
+  my $current = %widgets<sheets>[ %widgets<notebook>.current_page ];
   $current.set_background($current.range, $c);
   my $ct = Cairo::Context.new( GTK::Compat::Cairo.create(%widgets<window>) );
   $ct.rgba($c);
@@ -422,7 +435,7 @@ sub show_column_titles is export {
 sub new_font is export {
   my $current = %widgets<sheets>[ %widgets<notebook>.current_page ];
   my $fd = Pango::FontDescription.new_from_string(
-    %widgets<fonbtbutton>.get_font_name
+    %widgets<fontbutton>.font_name
   );
   $current.range_set_font($current.range, $fd);
 }
@@ -564,6 +577,8 @@ CSS
 # »»»»»»»»»»»»»»»» WARNING ««««««««««««««««
 # Whitespace is CRITICAL here! Do NOT let your editor strip trailing 
 # whitespace. If you are getting SEGVs in odd places, look here, FIRST!
+#
+# Consider adding a mark at end of string for clarification?
 
 # Take all of these and TEST IN ISOLATION!!
   %xpm<bullet> = q:to/XPM/.chomp;

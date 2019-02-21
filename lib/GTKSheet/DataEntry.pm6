@@ -1,12 +1,15 @@
 use v6.c;
 
+use NativeCall;
+
+use GTK::Compat::Types;
+use GTK::Raw::Types;
 use GTKSheet::Raw::Types;
 use GTKSheet::Raw::DataEntry;
 
-use GTK::Entry
+use GTK::Entry;
 
-our subset DataEntryAncestry
-  where GtkDataEntry | GtkEntry | GtkEditable | GtkBuildable | GtkWidget;
+our subset DataEntryAncestry is export where GtkDataEntry | EntryAncestry;
 
 class GTKSheet::DataEntry is GTK::Entry {
   has GtkDataEntry $!de;
@@ -23,7 +26,7 @@ class GTKSheet::DataEntry is GTK::Entry {
         my $to-parent;
         $!de = do {
           when GtkDataTextView {
-            $to-parent = nativecast(GtkEntry);
+            $to-parent = nativecast(GtkEntry, $_);
             $entry;
           }
           when EntryAncestry {
@@ -39,13 +42,18 @@ class GTKSheet::DataEntry is GTK::Entry {
       }
     }
   }
-
-  method new {
+  
+  multi method new (DataEntryAncestry $entry) {
+    my $o = self.bless(:$entry);
+    $o.upref;
+  }
+  multi method new {
     self.bless( entry => gtk_data_entry_new() );
   }
 
   method get_type {
-    gtk_data_entry_get_type();
+    state ($n, $t);
+    GTK::Widget.unstable_get_type( &gtk_data_entry_get_type, $n, $t );
   }
 
   method data_format is rw {
