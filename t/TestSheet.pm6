@@ -303,7 +303,7 @@ sub activate_sheet_cell ($sheet, $r, $c --> gint) is export {
   %widgets<entry>.max_length = $sheet_entry.max_length
     if $sheet_entry ~~ <GTK::Entry GTKSheet::DataEntry>.any;
 
-  %widgets<entry>.text = $sheet.entry_text if $sheet.entry_text;
+  %widgets<entry>.text = $sheet.entry_text ?? $sheet.entry_text !! '';
 
   my $attr = $sheet.get_attributes($r, $c);
   %widgets<entry>.editable = $attr.is_editable;

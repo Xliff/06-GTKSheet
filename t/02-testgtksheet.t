@@ -85,13 +85,15 @@ sub MAIN is export {
     %widgets<toolbar>.insert(%widgets<fontitem>);
 
     for <left center right> {
+      # Never use loop var in a closure.
+      my $just = $_;
       %widgets<justify_buttons>{$_} = GTK::ToggleButton.new;
-      my $item = GTK::ToolItem.new;
-      $item.add( %widgets<justify_buttons>{$_} );
-      %widgets<toolbar>.insert($item);
-      %widgets<justify_buttons>{$_}.released.tap({ justify($_) });
-      my $image = GTK::Image.new_from_pixbuf(%pixbuf{$_});
-      %widgets<justify_buttons>{$_}.add($image);
+      %widgets<toolitems>.push: GTK::ToolItem.new;
+      %widgets<toolitems>[*-1].add( %widgets<justify_buttons>{$just} );
+      %widgets<toolbar>.insert( %widgets<toolitems>[*-1] );
+      %widgets<justify_buttons>{$_}.released.tap({ justify($just) });
+      my $image = GTK::Image.new_from_pixbuf(%pixbuf{$just});
+      %widgets<justify_buttons>{$just}.add($image);
     }
     %widgets<toolbar>.insert($sep2);
     %widgets<main_vbox>.pack_start(%widgets<toolbar>, False, True);
