@@ -8,7 +8,7 @@ use GTK::Raw::Types;
 use GTKSheet::Raw::Types;
 use GTKSheet;
 
-use TestSheet;
+use TestSheet::Common;
 
 use GTK::Button;
 
@@ -70,7 +70,11 @@ sub build_example2($s) is export {
             $s.activate.tap(-> *@a { @a[*-1].r =   alarm_activate(     |@a[1..2] ) });
             $s.traverse.tap(-> *@a { @a[*-1].r =   alarm_traverse(     |@a[1..4] ) });
   
-  $s.set-cell.tap({ parse_numbers( $s ) });
+  $s.set-cell.tap(-> *@a { 
+    say 'set cell?';
+    CATCH { default { .message.say; .rethrow } }
+    parse_numbers( $s ) 
+  });
 
   $s.set_row_height(12, 60);
   my $b1 = GTK::Button.new_with_label('GTK_FILL');

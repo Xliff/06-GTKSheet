@@ -5,7 +5,7 @@ use GTK::Compat::Types;
 use GTK::Raw::Types;
 use GTKSheet::Raw::Types;
 
-use TestSheet;
+use TestSheet::Common;
 
 use GTK::Compat::Pixbuf;
 use GTK::Button;
