@@ -1,0 +1,2 @@
+- Add a working page-change signal on the notebook to t/02-testgtksheet.t
+

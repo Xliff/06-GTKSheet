@@ -23,7 +23,7 @@ use GTKSheet;
 use lib 't';
 use TestSheet;
 use TestSheet::Example1;
-# use TestSheet::Example2;
+use TestSheet::Example2;
 # use TestSheet::Example3;
 
 constant NUM_SHEETS = 4;
@@ -33,8 +33,7 @@ sub build_example4 ($s) {
 }
 
 sub build_example ($s) {
-  build_example1($s) if $s =:= %widgets<sheets>[0];
-  # build_example2($s) if $s =:= %widgets<sheets>[1];
+
   # build_example3($s) if $s =:= %widgets<sheets>[2];
   # build_example4($s) if $s =:= %widgets<sheets>[3];
 }
@@ -144,9 +143,8 @@ sub MAIN is export {
    %widgets<entry>.changed.tap( { entry_changed        });
    %widgets<entry>.activate.tap({ activate_sheet_entry });
    
-   say "Would be building examples...";
-   #build_example($_) for %widgets<sheets>;
-   build_example1(%widgets<sheets>[0]);
+   build_example1( %widgets<sheets>[0] );
+   build_example2( %widgets<sheets>[1] );
 
    # ???
    # %widgets<bg_pixmap> = GTK::Image.new_from_pixbuf(%pixbuf<paint>);

@@ -95,21 +95,23 @@ sub build_menu($s) is export {
   $menu.menu;
 }
 
-sub do_popup($s, $eb is copy) is export {
-  $eb = nativecast(GdkEventButton, $eb);
+sub do_popup($s, $ev) is export {
+  my $eb = nativecast(GdkEventButton, $ev);
   my ($x, $y, $m) = GTK::Compat::Window.new($eb.window).
     get_device_position($eb.device);
 
   if $m +& GDK_BUTTON3_MASK {
     if %widgets<popup> {
-      %widgets<popup>.destroy;
+      #%widgets<popup>.destroy;
       %widgets<popup> = Nil;
     }
 
     %widgets<popup> = build_menu($s);
-    %widgets<popup>.popup(
-      GtkWidget, GtkWidget, Pointer, Pointer, $eb.button, $eb.time
-    );
+    %widgets<popup>.show_all;
+    # %widgets<popup>.popup(
+    #   GtkWidget, GtkWidget, Pointer, Pointer, $eb.button, $eb.time
+    # );
+    %widgets<popup>.popup_at_pointer(GdkEvent);
   }
   0;
 }
@@ -136,11 +138,12 @@ sub format_text($s, $t, $j is rw, $l is rw) {
     $l = $t.trim.Numeric.fmt('%E');
   } else {
     $l = $t.trim.Numeric.fmt("%{ DEFAULT_PRECISION }f");
-    $l .= fmt('%e') if $l.elems > $space;
+    $l .= fmt('%E') if $l.elems > $space;
   }
 }
 
 sub parse_numbers($s) is export {
+  say 'PARSE_NUMBERS';
   my ($j, $label) = ( $s.get_attributes.justification );
   my $t = $s.entry_text;
   # Need $j set to new value before its use in the next statement.
@@ -151,7 +154,7 @@ sub parse_numbers($s) is export {
 sub clipboard_handler($s, $ek is copy) is export {
   $ek = nativecast(GdkEventKey, $ek);
   if [||](
-    $ek.state  +&  GDK_CONTROL_MASK,
+    $ek.state  +& GDK_CONTROL_MASK,
     $ek.keyval == GDK_KEY_Control_L,
     $ek.keyval == GDK_KEY_Control_R,
   ) {
@@ -281,9 +284,10 @@ sub justify($j) is export {
     when 'right'  { GTK_JUSTIFY_RIGHT  }
     when 'center' { GTK_JUSTIFY_CENTER }
   }
-  my $current = %widgets<sheets>[ %widgets<notebook>.current_page ];
   %widgets<justify_buttons>{$j}.active = True;
-  $current.range_set_justification($jv);
+  # Appears to be Any when setting up Example2. Why?
+  my $current = %widgets<sheets>[ %widgets<notebook>.current_page ];
+  $current.range_set_justification($jv) with $current;
 }
 
 sub activate_sheet_cell ($sheet, $r, $c --> gint) is export {
