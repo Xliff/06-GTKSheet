@@ -6,14 +6,15 @@ use GTK::Compat::RGBA;
 
 use GTKSheet::Raw::Types;
 
-use TestSheet;
+use TestSheet::Common;
 
 unit package TestSheet::Example3;
 
 sub build_example3 ($s) is export {
   my $color = GTK::Compat::RGBA.new;
   my $range = GtkSheetRange.new(0, 0, 10, 6);
-
+  
+  $s.name = 'example3';
   # selector in CSS:
   #
   # sheet#example3 .orange {
@@ -62,8 +63,9 @@ sub build_example3 ($s) is export {
     CAIRO_LINE_CAP_BUTT, CAIRO_LINE_JOIN_MITER
   );
 
-  $s.autoresize = True;
-  for <GtkDataEntry GtkEntry GtkSpinButton GtkTextView>.Array:kv -> $k, $v {
+  # Should be made into a proper "attribute"
+  $s.autoresize = True; 
+  for <GtkDataEntry GtkEntry GtkSpinButton GtkTextView>.kv -> $k, $v {
     $s.column_button_add_label($k, $v);
   }
 
@@ -75,5 +77,5 @@ sub build_example3 ($s) is export {
 
   $s.entry_signal_connect_changed(-> $, $ { sheet_entry_changed_handler() });
 
-  $s.traverse.tap(-> *@a { @a[*-1].r = change_entry(|@a) });
+  $s.traverse.tap(-> *@a { change_entry($s, |@a[1..*]) });
 }

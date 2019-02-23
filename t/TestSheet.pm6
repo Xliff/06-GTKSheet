@@ -25,19 +25,13 @@ use GTKSheet;
 use TestSheet::Common;
 use TestSheet::Example1;
 use TestSheet::Example2;
-# use TestSheet::Example3;
+use TestSheet::Example3;
 
 constant NUM_SHEETS = 4;
 
-sub build_example4 ($s) {
-  $s.button_press_event.tap({ do_popup($s) });
-}
-
-sub build_example ($s) {
-
-  # build_example3($s) if $s =:= %widgets<sheets>[2];
-  # build_example4($s) if $s =:= %widgets<sheets>[3];
-}
+# sub build_example4 ($s) {
+#   $s.button_press_event.tap({ do_popup($s) });
+# }
 
 sub MAIN is export {
   my $a = GTK::Application.new( title => 'org.genex.testgtksheet' );
@@ -146,6 +140,7 @@ sub MAIN is export {
    
    build_example1( %widgets<sheets>[0] );
    build_example2( %widgets<sheets>[1] );
+   build_example3( %widgets<sheets>[2] );
 
    # ???
    # %widgets<bg_pixmap> = GTK::Image.new_from_pixbuf(%pixbuf<paint>);

@@ -92,6 +92,30 @@ class GTKSheet is GTK::Container {
     gtk_sheet_new_with_custom_entry($r, $c, $title, $et);
   }
 
+  method autoresize is rw {
+    Proxy.new: 
+      FETCH => -> $           { self.get_autoresize     },
+      STORE => -> $, Int() $r { self.set_autoresize($r) };
+  }
+  
+  method autoresize_columns is rw {
+    Proxy.new:
+      FETCH => -> $           { self.get_autoresize_columns     },
+      STORE => -> $, Int() $r { self.set_autoresize_columns($r) };
+  }
+  
+  method autoresize_rows is rw {
+    Proxy.new:
+      FETCH => -> $           { self.get_autoresize_rows     },
+      STORE => -> $, Int() $r { self.set_autoresize_rows($r) };
+  }
+
+  method autoscroll is rw {
+    Proxy.new:
+      FETCH => -> $           { self.get_autoscroll      },
+      STORE => -> $, Int() $s { self.set_autosccroll($s) };
+  }
+
   method entry_text is rw {
     Proxy.new(
       FETCH => sub ($) {
@@ -292,19 +316,19 @@ class GTKSheet is GTK::Container {
     gtk_sheet_attach_floating($!es, $widget, $r, $c);
   }
 
-  method autoresize {
+  method get_autoresize {
     gtk_sheet_autoresize($!es);
   }
 
-  method autoresize_columns {
+  method get_autoresize_columns {
     gtk_sheet_autoresize_columns($!es);
   }
 
-  method autoresize_rows {
+  method get_autoresize_rows {
     gtk_sheet_autoresize_rows($!es);
   }
 
-  method autoscroll {
+  method get_autoscroll {
     gtk_sheet_autoscroll($!es);
   }
 
@@ -937,7 +961,7 @@ class GTKSheet is GTK::Container {
 
   method column_get (Int() $col = self.active_cell.col) {
     my gint $c = resolve-int($col);
-    GtkSheet::Column.new( gtk_sheet_column_get($!es, $c), $!es, $c );
+    GTKSheet::Column.new( gtk_sheet_column_get($!es, $c), $!es, $c );
   }
 
   method column_get_datatype (Int() $col = self.active_cell.col) {

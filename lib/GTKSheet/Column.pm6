@@ -13,24 +13,60 @@ use GTKSheet::Raw::Column;
 # Wrapper required to set property on $!col.
 use GTK::Roles::Properties;
 
-class GTKSheet::Column {
-  has GtkSheetColumn $!c;
-  has guint $!col;
+use GTK::Bin;
+
+our subset SheetColumnAncestry where GtkSheetColumn | BinAncestry;
+
+class GTKSheet::Column is GTK::Bin {
+  has GtkSheetColumn $!col;
+  has guint $!c;
   has GtkSheet $!sheet;
 
   also does GTK::Roles::Properties;
+  
+  method bless(*%attrinit) {
+    my $o = self.CREATE.BUILDALL(Empty, %attrinit);
+    $o.setType('GTKSheet::Column');
+    $o;
+  }
 
   submethod BUILD (:$column, :$sheet, :$col) {
-    $!prop = nativecast(GObject, $!c = $column);
+    my $to-parent;
+    $!col = do given $column {
+      when GtkSheetColumn {
+        $to-parent = nativecast(GtkBin, $_);
+        $_;
+      }
+      when BinAncestry {
+        $to-parent = $_;
+        nativecast(GtkSheetColumn, $_);
+      }
+      default {
+        die "Unexpected type { .^name }' passed to GTKSheet::Column.new"
+      }
+    }
     $!sheet = $sheet;
-    $!col = $col;
+    $!c = $col;
+    self.setBin($to-parent);
   }
 
   method GTKSheet::Raw::Types::GtkSheetColumn is also<column> { $!c }
 
-  multi method new (GtkSheetColumn $column, GtkSheet $sheet, Int $num) {
-    my $col = self.RESOLVE-INT($num);
+  multi method new (
+    SheetColumnAncestry $column, 
+    GtkSheet() $sheet, 
+    Int() $num
+  ) {
+    my $col = resolve-int($num);
     self.bless(:$column, :$sheet, :$col);
+  }
+  multi method new (SheetColumnAncestry $column) {
+    samewith;
+  }
+  multi method new(|c) {
+    die q:to/DIE/.chomp;
+Please use the GTKSheet::Column.new($column, $sheet, $colNum) constructor.
+DIE
   }
 
   method datatype is rw {
@@ -130,7 +166,7 @@ class GTKSheet::Column {
   }
 
   method get_index is also<index> {
-    gtk_sheet_column_get_index($!c);
+    gtk_sheet_column_get_index($!col);
   }
 
   method get_iskey {
@@ -142,7 +178,7 @@ class GTKSheet::Column {
   }
 
   method get_readonly {
-    gtk_sheet_column_get_readonly($!sheet, $!c);
+    so gtk_sheet_column_get_readonly($!sheet, $!c);
   }
 
   method get_tooltip_markup {
@@ -168,11 +204,11 @@ class GTKSheet::Column {
   }
 
   method sensitive {
-    gtk_sheet_column_sensitive($!sheet, $!c);
+    so gtk_sheet_column_sensitive($!sheet, $!c);
   }
 
   method set_column_width (Int() $width) {
-    my gint $w = resolve-int($width);
+    my gint $w = self.RESOLVE-INT($width);
     gtk_sheet_set_column_width($!sheet, $!c, $w);
   }
 
@@ -185,7 +221,7 @@ class GTKSheet::Column {
   }
 
   method set_entry_type (Int() $entry_type) {
-    my uint64 $et = resolve-ulong($entry_type);
+    my uint64 $et = self.RESOLVE-ULONG($entry_type);
     gtk_sheet_column_set_entry_type($!sheet, $!c, $entry_type);
   }
 
@@ -194,17 +230,17 @@ class GTKSheet::Column {
   }
 
   method set_iskey (Int() $is_key) {
-    my gboolean $ik = resolve-bool($is_key);
+    my gboolean $ik = self.RESOLVE-BOOL($is_key);
     gtk_sheet_column_set_iskey($!sheet, $!c, $ik);
   }
 
   method set_justification (Int() $just) {
-    my guint $j = resolve-uint($just);
+    my guint $j = self.RESOLVE-UINT($just);
     gtk_sheet_column_set_justification($!sheet, $!c, $j);
   }
 
   method set_readonly (Int() $is_readonly) {
-    my gboolean $ir = resolve-bool($is_readonly);
+    my gboolean $ir = self.RESOLVE-BOOL($is_readonly);
     gtk_sheet_column_set_readonly($!sheet, $!c, $ir);
   }
 
@@ -221,11 +257,11 @@ class GTKSheet::Column {
   }
 
   method set_vjustification (Int() $vjust) {
-    my guint $vj = resolve-uint($vjust);
+    my guint $vj = self.RESOLVE-UINT($vjust);
     gtk_sheet_column_set_vjustification($!sheet, $!c, $vj);
   }
 
   method visible {
-    gtk_sheet_column_visible($!sheet, $!c);
+    so gtk_sheet_column_visible($!sheet, $!c);
   }
 }

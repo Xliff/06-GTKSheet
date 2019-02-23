@@ -12,6 +12,8 @@ use Pango::FontDescription;
 use Pango::Raw::Types;
 
 use GTK::Entry;
+use GTK::SpinButton;
+use GTK::TextView; 
 use GTKSheet::DataEntry;
 
 use GTK::Utils::MenuBuilder;
@@ -34,6 +36,7 @@ sub change_page($, $, $pagenum, $) is export {
 }
 
 sub popup_activated ( $i --> gint ) {
+  $i.say;
   my $c = %widgets<sheets>[ %widgets<notebook>.current_page ];
   given $i {
     when 'Add Column'   { $c.add_column(1) }
@@ -87,8 +90,9 @@ sub build_menu($s) is export {
     'Clear Cells'   => { id => 'item_6' },
   ] );
 
-  for $menu.items.values {
-    my $i = $_;
+  for $menu.items.keys {
+    .say;
+    my $i = $menu.items{$_};
     $i.clicked.tap( -> *@a { @a[* - 1].r = popup_activated($i.label) });
     $i.show;
   }
@@ -191,34 +195,40 @@ sub move_handler($or, $nr) is export {
     $nr.row0, $nr.col0, $nr.row1, $nr.col1;
 }
 
-sub change_entry($w, $r, $c, $nr, $nc --> gint) is export {
-  my $s = GTKSheet.new($w);
+sub change_entry($s, $r, $c, $nr, $nc, $ud, $rt) is export {
+  CATCH { default { .message.say; .rethrow } }
+  
   my $changed = False;
 
   printf "change_entry: %d %d -> %d %d\n", $r, $c, $nr[0], $nc[0];
-  if $nc == 1 && ($c != 1 || $s.state != GTK_STATE_NORMAL) {
+  if $nc[0] == 1 && ($c != 1 || $s.state != GTK_STATE_NORMAL) {
     say "change_entry: GtkEntry\n";
     $s.change_entry( GTK::Entry.get_type );
     $changed = True;
   }
 
-  if $nc == 2 && ($c != 2 || $s.state != GTK_STATE_NORMAL) {
+  if $nc[0] == 2 && ($c != 2 || $s.state != GTK_STATE_NORMAL) {
     say "change_entry: GtkSpinButton";
-    $s.change_entry( GTK::SpinButton.get_type );
-    $changed = True;
-    my $t = $s.get_text($nr[0], $nc[0]).Int;
+    #$s.change_entry( GTK::SpinButton.get_type );
+    my $t = $s.cell_get_text($nr[0], $nc[0]);
+    $t = $t.defined && $t.Int !~~ Failure ?? $t.Int !! 0;
+    say "Adj ({ $t })";
     my $a = GTK::Adjustment.new($t, 0, 100, 1, 10, 0);
+    say 'SB';
     my $sp = GTK::SpinButton.new($s.get_entry);
+    say "Conf ({ $sp })";
     $sp.configure($a, 0, 3);
+    say 'postconf';
+    $changed = True;
   }
 
-  if $nc == 3 && ($c != 3 || $s.state != GTK_STATE_NORMAL) {
+  if $nc[0] == 3 && ($c != 3 || $s.state != GTK_STATE_NORMAL) {
     say "change_entry: GtkTextView";
     $s.change_entry( GTK::TextView.get_type );
     $changed = True;
   }
 
-  if $nc == 5 && ($c != 4 || $s.state != GTK_STATE_NORMAL) {
+  if $nc[0] == 5 && ($c != 4 || $s.state != GTK_STATE_NORMAL) {
     say "change_entry: GtkDataEntry";
     $s.change_entry( GTKSheet::DataEntry.get_type );
     $changed = True;
@@ -229,7 +239,7 @@ sub change_entry($w, $r, $c, $nr, $nc --> gint) is export {
     # this routine.
     $s.entry_signal_connect_changed({ sheet_entry_changed_handler });
   }
-  1;
+  $rt.r = 1;
 }
 
 sub alarm_change($r, $c) is export {
