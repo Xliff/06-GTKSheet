@@ -56,14 +56,13 @@ sub build_example3 ($s) is export {
   );
 
   $range = GtkSheetRange.new(0, 1, 0, 6);
-  # $color.parse('dark blue');
+  $color.parse('dark blue');
   $s.range_set_border_color($range, $color);
   $s.range_set_border(
     $range, GTK_SHEET_BOTTOM_BORDER, 4,
     CAIRO_LINE_CAP_BUTT, CAIRO_LINE_JOIN_MITER
   );
 
-  # Should be made into a proper "attribute"
   $s.autoresize = True; 
   for <GtkDataEntry GtkEntry GtkSpinButton GtkTextView>.kv -> $k, $v {
     $s.column_button_add_label($k, $v);

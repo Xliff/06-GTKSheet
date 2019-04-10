@@ -198,6 +198,8 @@ sub move_handler($or, $nr) is export {
 sub change_entry($s, $r, $c, $nr, $nc, $ud, $rt) is export {
   CATCH { default { .message.say; .rethrow } }
   
+  say 'Change Entry';
+  
   my $changed = False;
 
   printf "change_entry: %d %d -> %d %d\n", $r, $c, $nr[0], $nc[0];
@@ -216,6 +218,7 @@ sub change_entry($s, $r, $c, $nr, $nc, $ud, $rt) is export {
     my $a = GTK::Adjustment.new($t, 0, 100, 1, 10, 0);
     say 'SB';
     my $sp = GTK::SpinButton.new($s.get_entry);
+    $sp.upref;
     say "Conf ({ $sp })";
     $sp.configure($a, 0, 3);
     say 'postconf';
@@ -303,8 +306,12 @@ sub justify($j) is export {
 }
 
 sub activate_sheet_cell ($sheet, $r, $c --> gint) is export {
+  CATCH { default { .message.say; .rethrow } }
+  
   my $sheet_entry = GTK::Widget.new($sheet.get_entry);
   my $cell;
+  
+  say 'ASC';
   
   given $sheet_entry.get_gobject_type {
     when GTK::Entry.get_type { 
