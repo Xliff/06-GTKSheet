@@ -1,8 +1,9 @@
 use v6.c;
 
-use NativeCall;
-
+use GTK::Compat::Types;
+use GTK::Raw::Types;
 use GTKSheet::Raw::Types;
+
 use GTKSheet::Raw::ItemEntry;
 
 use GTK::Entry;
@@ -11,9 +12,10 @@ our subset ItemEntryAncestry where GtkItemEntry | EntryAncestry;
 
 class GTKSheet::ItemEntry is GTK::Entry {
   has GtkItemEntry $!ie;
+  has gint $!j;
 
   method bless(*%attrinit) {
-    my $o = self.CREATE.BUILDALL(Empty, %attrinit);s
+    my $o = self.CREATE.BUILDALL(Empty, %attrinit);
     $o.setType('GTKSheet::ItemEntry');
     $o;
   }
@@ -24,30 +26,37 @@ class GTKSheet::ItemEntry is GTK::Entry {
         my $to-parent;
         $!ie = do {
           when GtkItemEntry {
-            $to-parent = nativecast(GtkEntry, $_);
+            $to-parent = cast(GtkEntry, $_);
             $_;
           }
+
           when EntryAncestry {
             $to-parent = $_;
-            nativecast(GTkItemEntry, $_;
+            cast(GtkItemEntry, $_);
           }
+
         }
         self.setEntry($to-parent);
       }
-      when GTSheet::ItemEntry {
+
+      when GTKSheet::ItemEntry {
       }
+
       default {
       }
     }
   }
 
   method new {
-    self.bless( entry => gtk_item_entry_new() );
+    my $e = gtk_item_entry_new();
+    $e ?? self.bless( entry => $e ) !! Nil;
   }
 
   method new_with_max_length(Int() $max) {
-    my gint $m = self.RESOLE-INT($max);
-    self.bless( entry => gtk_item_entry_new_with_max_length($m) );
+    my gint $m = $max;
+    my $e = gtk_item_entry_new_with_max_length($m);
+
+    $e ?? self.bless( entry => $e ) !! Nil;
   }
 
   method cursor_visible is rw {
@@ -56,7 +65,8 @@ class GTKSheet::ItemEntry is GTK::Entry {
         gtk_item_entry_get_cursor_visible($!ie);
       },
       STORE => sub ($, Int() $visible is copy) {
-        my gboolean $ = self.RESOLE-BOOL($visible);
+        my gboolean $v = $visible;
+
         gtk_item_entry_set_cursor_visible($!ie, $v);
       }
     );
@@ -68,7 +78,8 @@ class GTKSheet::ItemEntry is GTK::Entry {
         gtk_item_entry_get_max_length_bytes($!ie);
       },
       STORE => sub ($, Int() $max_length_bytes is copy) {
-        my gint $mlb = self.RESOLVE-INT($max_length_bytes)l
+        my gint $mlb = $max_length_bytes;
+
         gtk_item_entry_set_max_length_bytes($!ie, $mlb);
       }
     );
@@ -77,27 +88,32 @@ class GTKSheet::ItemEntry is GTK::Entry {
   method justification is rw {
     Proxy.new(
       FETCH => sub ($) {
-        GtkJustification( $ie.justification );
+        GtkJustification( $!j );
       },
       STORE => sub ($, Int() $justification is copy) {
-        my uint32 $j = self.RESOLVE-UINT($justification);
+        $!j = (my uint32 $j = $justification);
+
         self.set_justification($j);
       }
-    }
+    );
   }
 
   method get_type {
-    gtk_item_entry_get_type();
+    state ($n, $t);
+
+    unstable_get_type( self.^name, &gtk_item_entry_get_type, $n, $t );
   }
 
   method set_justification (Int() $just) {
-    my uint32 $j = self.RESOLVE-UINT($just);
+    my uint32 $j = $just;
+
     gtk_item_entry_set_justification($!ie, $j);
   }
 
-  method set_text (Str() $text, GtkJustification $just) {
-    my uint32 $j = self.RESOLVE-UINT($just);
+  method set_text (Str() $text, Int() $just) {
+    my uint32 $j = $just;
+
     gtk_item_entry_set_text($!ie, $text, $just);
   }
-  
+
 }

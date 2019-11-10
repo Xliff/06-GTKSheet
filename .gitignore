@@ -2,6 +2,7 @@
 dead/
 .touch/
 .idea/
+LastBuildResults
 LastBuildResults.*
 *.bak
 *.bump

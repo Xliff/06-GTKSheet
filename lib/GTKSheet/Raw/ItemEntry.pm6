@@ -3,6 +3,7 @@ use v6.c;
 use NativeCall;
 
 use GTK::Compat::Types;
+use GTK::Raw::Types;
 use GTKSheet::Raw::Types;
 
 unit package GTKSheet::Raw::ItemEntry;

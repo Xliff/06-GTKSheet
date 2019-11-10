@@ -1,0 +1,360 @@
+Dependency Generation
+=====================
+real 0.51
+user 0.82
+sys 0.02
+ === GTK::Adjustment ===
+Stage start      :   0.000
+Stage parse      :   1.329
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.000
+Stage mast       :   0.001
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GTK::Bin ===
+Stage start      :   0.000
+Stage parse      :   2.780
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.000
+Stage mast       :   0.001
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GTK::Compat::RGBA ===
+Stage start      :   0.000
+Stage parse      :   1.111
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.000
+Stage mast       :   0.001
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GTK::Compat::Types ===
+Stage start      :   0.000
+Stage parse      :   1.103
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.005
+Stage mast       :   0.012
+Stage mbc        :   0.004
+Stage moar       :   0.000
+ === GTK::Container ===
+Stage start      :   0.000
+Stage parse      :   2.724
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.000
+Stage mast       :   0.001
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GTK::Entry ===
+Stage start      :   0.000
+Stage parse      :   2.799
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.000
+Stage mast       :   0.001
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GTK::Raw::ReturnedValue ===
+Stage start      :   0.000
+Stage parse      :   0.880
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GTK::Raw::Types ===
+Stage start      :   0.000
+Stage parse      :   1.229
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.003
+Stage mast       :   0.007
+Stage mbc        :   0.003
+Stage moar       :   0.000
+ === GTK::Raw::Utils ===
+Stage start      :   0.000
+Stage parse      :   1.091
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.000
+Stage mast       :   0.001
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GTK::Roles::Pointers ===
+Stage start      :   0.000
+Stage parse      :   0.995
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.000
+Stage mast       :   0.001
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GTK::Roles::Properties ===
+Stage start      :   0.000
+Stage parse      :   1.340
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.000
+Stage mast       :   0.001
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GTK::Roles::Signals::Generic ===
+Stage start      :   0.000
+Stage parse      :   1.289
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.000
+Stage mast       :   0.001
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GTK::TextView ===
+Stage start      :   0.000
+Stage parse      :   3.268
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.000
+Stage mast       :   0.001
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === Method::Also ===
+Stage start      :   0.000
+Stage parse      :   0.865
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === Pango::Raw::Types ===
+Stage start      :   0.000
+Stage parse      :   1.086
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.002
+Stage mbc        :   0.001
+Stage moar       :   0.000
+ === GTKSheet::Raw::Types ===
+Stage start      :   0.000
+
+    precomp ../../../../cbwood/Projects/p6-GtkSheet/lib/GTKSheet/Raw/Types.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.574
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.027
+    Stage mast       :   0.152
+    Stage mbc        :   0.007
+Stage parse      :   2.786
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.003
+Stage mbc        :   0.001
+Stage moar       :   0.000
+ === GTKSheet::Raw::Column ===
+Stage start      :   0.000
+
+    precomp ../../../../cbwood/Projects/p6-GtkSheet/lib/GTKSheet/Raw/Column.pm6
+    Stage start      :   0.000
+    Stage parse      :   3.988
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.027
+    Stage mast       :   0.140
+    Stage mbc        :   0.005
+Stage parse      :   5.792
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.000
+Stage mast       :   0.001
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GTKSheet::Raw::DataEntry ===
+Stage start      :   0.000
+
+    precomp ../../../../cbwood/Projects/p6-GtkSheet/lib/GTKSheet/Raw/DataEntry.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.880
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.016
+    Stage mast       :   0.076
+    Stage mbc        :   0.004
+Stage parse      :   3.598
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.000
+Stage mast       :   0.001
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GTKSheet::Raw::DataTextView ===
+Stage start      :   0.000
+
+    precomp ../../../../cbwood/Projects/p6-GtkSheet/lib/GTKSheet/Raw/DataTextView.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.848
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.012
+    Stage mast       :   0.081
+    Stage mbc        :   0.006
+Stage parse      :   3.606
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.000
+Stage mast       :   0.001
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GTKSheet::Raw::ItemEntry ===
+Stage start      :   0.000
+
+    precomp ../../../../cbwood/Projects/p6-GtkSheet/lib/GTKSheet/Raw/ItemEntry.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.909
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.012
+    Stage mast       :   0.081
+    Stage mbc        :   0.006
+Stage parse      :   3.650
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.000
+Stage mast       :   0.001
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GTKSheet::Raw::Sheet ===
+Stage start      :   0.000
+
+    precomp ../../../../cbwood/Projects/p6-GtkSheet/lib/GTKSheet/Raw/Sheet.pm6
+    Stage start      :   0.000
+    Stage parse      :  13.986
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.087
+    Stage mast       :   0.331
+    Stage mbc        :   0.012
+Stage parse      :  16.094
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.001
+Stage mast       :   0.001
+Stage mbc        :   0.001
+Stage moar       :   0.000
+ === GTKSheet::Roles::Signals::Sheet ===
+Stage start      :   0.000
+
+    precomp ../../../../cbwood/Projects/p6-GtkSheet/lib/GTKSheet/Roles/Signals/Sheet.pm6
+    Stage start      :   0.000
+    Stage parse      :   2.644
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.036
+    Stage mast       :   0.154
+    Stage mbc        :   0.007
+Stage parse      :   4.558
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.000
+Stage mast       :   0.001
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GTKSheet::Column ===
+Stage start      :   0.000
+
+    precomp ../../../../cbwood/Projects/p6-GtkSheet/lib/GTKSheet/Column.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.953
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.034
+    Stage mast       :   0.277
+    Stage mbc        :   0.011
+Stage parse      :   4.579
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.000
+Stage mast       :   0.001
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GTKSheet::DataEntry ===
+Stage start      :   0.000
+
+    precomp ../../../../cbwood/Projects/p6-GtkSheet/lib/GTKSheet/DataEntry.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.715
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.019
+    Stage mast       :   0.242
+    Stage mbc        :   0.008
+Stage parse      :   4.240
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.000
+Stage mast       :   0.001
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GTKSheet::DataTextView ===
+Stage start      :   0.000
+
+    precomp ../../../../cbwood/Projects/p6-GtkSheet/lib/GTKSheet/DataTextView.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.911
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.023
+    Stage mast       :   0.274
+    Stage mbc        :   0.008
+Stage parse      :   4.751
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.000
+Stage mast       :   0.001
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GTKSheet::ItemEntry ===
+Stage start      :   0.000
+
+    precomp ../../../../cbwood/Projects/p6-GtkSheet/lib/GTKSheet/ItemEntry.pm6
+    Stage start      :   0.000
+    Stage parse      :   1.679
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.019
+    Stage mast       :   0.230
+    Stage mbc        :   0.008
+Stage parse      :   4.183
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.000
+Stage mast       :   0.001
+Stage mbc        :   0.000
+Stage moar       :   0.000
+ === GTKSheet ===
+Stage start      :   0.000
+
+    precomp ../../../../cbwood/Projects/p6-GtkSheet/lib/GTKSheet.pm6
+    Stage start      :   0.000
+    Stage parse      :   2.548
+    Stage syntaxcheck:   0.000
+    Stage ast        :   0.000
+    Stage optimize   :   0.122
+    Stage mast       :   0.452
+    Stage mbc        :   0.019
+Stage parse      :   5.518
+Stage syntaxcheck:   0.000
+Stage ast        :   0.000
+Stage optimize   :   0.000
+Stage mast       :   0.001
+Stage mbc        :   0.000
+Stage moar       :   0.000
+
+real 88.70
+user 112.75
+sys 5.03

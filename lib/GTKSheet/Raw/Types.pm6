@@ -11,6 +11,9 @@ use GTK::Roles::Pointers;
 
 unit package GTKSheet::Raw::Types;
 
+# Forced compile count
+constant forced = 2;
+
 constant sheet is export = 'gtksheet-4.0',v1;
 
 class GtkDataEntry     is repr("CPointer") is export does GTK::Roles::Pointers { }
